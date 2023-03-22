@@ -65,13 +65,10 @@ class HabitAddendum : AppCompatActivity() {
                 }
                 val countSpinnersChild = habitPriority.count
                 val habitPriorityString = HabitPriority.toRus(habitItem.habitPriority)
-                Log.i("lkip", habitPriorityString)
                 for (i in 0 until countSpinnersChild) {
                     val spinnerElement = habitPriority.getItemAtPosition(i)
-                    Log.i("lkin", spinnerElement.toString())
                     if (spinnerElement.toString() == habitPriorityString) {
                         habitPriority.setSelection(i)
-                        Log.i("lkim", spinnerElement.toString())
                     }
                 }
             }

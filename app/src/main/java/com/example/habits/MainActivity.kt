@@ -26,15 +26,12 @@ class MainActivity : AppCompatActivity() {
                 if (result.resultCode == Activity.RESULT_OK) {
                     val status = result.data?.getStringExtra("status") ?: "Nothing"
                     val index = result.data?.getIntExtra("index", -1) ?: -1
-                    Log.i("lk", status.toString())
                     when (ChangeStatus.valueOf(status)) {
                         ChangeStatus.Changed -> {
-                            Log.i("lk", "ki")
                             adapter.notifyItemChanged(index)
 
                         }
                         ChangeStatus.Added -> {
-                            Log.i("lk", "ki")
                             adapter.notifyItemInserted(index)
                         }
                         ChangeStatus.Deleted -> adapter.notifyItemRemoved(index)
