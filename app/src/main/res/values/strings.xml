@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">Habits</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="habit_title">Название привычки</string>
+    <string name="new_habit">Новая привычка</string>
+    <string name="habit_description">Описание: %s</string>
+    <string name="habit_priority">Приоритет: %s</string>
+    <string name="habit_type">Тип: %s</string>
+    <string name="habit_frequency">Периодичность: %d раз%s в %s</string>
+    <string name="adding_habit">adding_habit</string>
+    <string name="habit_name">Название привычки</string>
+    <string name="description">Описание</string>
+    <string name="habit">Привычка</string>
+    <string name="frequency">Периодичность</string>
+    <string name="priority">Приоритет</string>
+    <string name="type">Тип</string>
+    <string name="good_habit">Хорошая</string>
+    <string name="bad_habit">Плохая</string>
+    <string name="edit_frequency">Периодичность</string>
+    <string name="count">Количество:</string>
+    <string name="_2">2</string>
+    <string name="period">Период: в </string>
+    <string name="day_period">день</string>
+    <string name="save_button">Сохранить</string>
+    <string name="color">Цвет</string>
+    <string name="red_color_text">Красный</string>
+    <string name="green_color_text">Зеленый</string>
+    <string name="blue_color_text">Синий</string>
+    <string name="yellow_color_text">Желтый</string>
+    <string-array name="priorities">
+        <item>Высокий</item>
+        <item>Средний</item>
+        <item>Низкий</item>
+    </string-array>
+    <string-array name="periods">
+        <item>День</item>
+        <item>Неделя</item>
+        <item>Месяц</item>
+        <item>Год</item>
+    </string-array>
+</resources>
