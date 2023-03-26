@@ -1,77 +1,44 @@
 package com.example.habits
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.example.habits.databinding.ActivityHabitAddendumBinding
 
 
 class HabitAddendum : AppCompatActivity() {
 
+    private lateinit var binding: ActivityHabitAddendumBinding
+    private lateinit var habitTitle: EditText
+    private lateinit var habitDescription: EditText
+    private lateinit var radioGroup: RadioGroup
+    private lateinit var habitPriority: Spinner
+    private lateinit var habitFrequencyCount: EditText
+    private lateinit var habitFrequencyPeriod: EditText
+    private lateinit var button: Button
+    private lateinit var colorRadioGroup: RadioGroup
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_habit_addendum)
-        val binding = ActivityHabitAddendumBinding.inflate(layoutInflater)
-        val button = findViewById<Button>(R.id.save_button)
-        //val choseButton = findViewById<Button>(R.id.choose_color_button)
-        val habitTitle = findViewById<EditText>(R.id.edit_habit_name)
-        val habitDescription = findViewById<EditText>(R.id.edit_habit_description)
-        val habitFrequencyCount = findViewById<EditText>(R.id.edit_count)
-        val habitFrequencyPeriod = findViewById<EditText>(R.id.edit_period)
-        val habitPriority = findViewById<Spinner>(R.id.edit_priority_spinner)
-        val radioGroup = findViewById<RadioGroup>(R.id.edit_type_radio_group)
-        val colorRadioGroup = findViewById<RadioGroup>(R.id.edit_color_radio_group)
-//        val habit_title = binding.editHabitName
-//        val habit_description = binding.editHabitDescription
-//        val radio_group = binding.editTypeRadioGroup
-//        val habit_priority = binding.editPrioritySpinner
-//        val habit_frequency_count = binding.editCount
-//        val habit_frequency_period = binding.editPeriod
+        binding = ActivityHabitAddendumBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        habitTitle = binding.editHabitName
+        habitDescription = binding.editHabitDescription
+        radioGroup = binding.editTypeRadioGroup
+        habitPriority = binding.editPrioritySpinner
+        habitFrequencyCount = binding.editCount
+        habitFrequencyPeriod = binding.editPeriod
+        button = binding.saveButton
+        colorRadioGroup = binding.editColorRadioGroup
 
         val extras = intent.extras
         var elementPosition = -1
         if (extras != null) {
-            val position = extras.getInt("position")
-            if (position != -1) {
-                elementPosition = position
-                val habitItem = HabitsList.getHabits()[position]
-                habitTitle.setText(habitItem.habitTitle)
-                habitDescription.setText(habitItem.habitDescription)
-                habitFrequencyCount.setText(habitItem.habitNumberExecution.toString())
-                habitFrequencyPeriod.setText(habitItem.frequency)
-                val countRadioButtons = radioGroup.childCount
-                for (i in 0 until countRadioButtons) {
-                    val radioButton = radioGroup.getChildAt(i)
-                    if ((radioButton is RadioButton) && (radioButton.text == HabitType.toRus(
-                            habitItem.habitType
-                        ))
-                    ) {
-                        radioButton.isChecked = true
-                    }
-                }
-                val countColorButtons = colorRadioGroup.childCount
-                for (i in 0 until countColorButtons) {
-                    val radioButton = colorRadioGroup.getChildAt(i)
-                    if ((radioButton is RadioButton) && (radioButton.text == habitItem.stringHabitColor)
-                    ) {
-                        radioButton.isChecked = true
-                    }
-                }
-                val countSpinnersChild = habitPriority.count
-                val habitPriorityString = HabitPriority.toRus(habitItem.habitPriority)
-                for (i in 0 until countSpinnersChild) {
-                    val spinnerElement = habitPriority.getItemAtPosition(i)
-                    if (spinnerElement.toString() == habitPriorityString) {
-                        habitPriority.setSelection(i)
-                    }
-                }
-            }
+            val position = extras.getInt(Constants.positionExtraName)
+            elementPosition = position
+            setHabitState(position)
         }
 //        choseButton.setOnClickListener{
 //            val fragmentManager = supportFragmentManager
@@ -80,62 +47,140 @@ class HabitAddendum : AppCompatActivity() {
 //            transaction.add(R.id.constraint, fragment).commit()
 //        }
         button.setOnClickListener {
-            val id = radioGroup.checkedRadioButtonId
-            val colorId = colorRadioGroup.checkedRadioButtonId
-            val habit_title_text = habitTitle.text.toString()
-            val habit_description_text = habitDescription.text.toString()
-            val habit_frequency_count_text = habitFrequencyCount.text.toString()
-            val habit_frequency_period_text = habitFrequencyPeriod.text.toString()
-            val habit_priority_text = habitPriority.selectedItem.toString()
-            if (colorId != -1 && id != -1 && habit_title_text.isNotEmpty() && habit_description_text.isNotEmpty()
-                && habit_frequency_count_text.isNotEmpty() && habit_frequency_period_text.isNotEmpty()
-            ) {
-                val checkedButton = findViewById<RadioButton>(id)
-                val checkedColorButton = findViewById<RadioButton>(colorId)
-                if (elementPosition == -1)
-                    HabitsList.addHabit(
-                        HabitInformation(
-                            habit_title_text, habit_description_text,
-                            HabitPriority.toEnum(habit_priority_text),
-                            HabitType.toEnum(checkedButton.text.toString()),
-                            habit_frequency_count_text.toInt(),
-                            habit_frequency_period_text,
-                            if (checkedColorButton.text.toString() == "Красный") {
-                                Color.rgb(255, 0, 0)
-                            } else
-                                Color.rgb(133, 200, 55),
-                            checkedColorButton.text.toString()
-                        )
-                    )
-                else
-                    HabitsList.changeHabit(
-                        elementPosition, HabitInformation(
-                            habit_title_text, habit_description_text,
-                            HabitPriority.toEnum(habit_priority_text),
-                            HabitType.toEnum(checkedButton.text.toString()),
-                            habit_frequency_count_text.toInt(),
-                            habit_frequency_period_text,
-                            if (checkedColorButton.text.toString() == "Красный") {
-                                Color.rgb(255, 0, 0)
-                            } else
-                                Color.rgb(133, 200, 55),
-                            checkedColorButton.text.toString()
+            buttonClickListener(elementPosition)
+        }
+    }
 
-                        )
-                    )
-                val resultIntent = Intent()
-                if (elementPosition == -1) {
-                    resultIntent.putExtra("status", "Added")
-                    resultIntent.putExtra("index", HabitsList.getHabits().size - 1)
-                } else {
-                    resultIntent.putExtra("status", "Changed")
-                    resultIntent.putExtra("index", elementPosition)
+    private fun setHabitState(position: Int) {
+        if (position != -1) {
+            val habitItem = HabitsList.getHabits()[position]
+            habitTitle.setText(habitItem.habitTitle)
+            habitDescription.setText(habitItem.habitDescription)
+            habitFrequencyCount.setText(habitItem.habitNumberExecution.toString())
+            habitFrequencyPeriod.setText(habitItem.frequency)
+            val countRadioButtons = radioGroup.childCount
+            for (i in 0 until countRadioButtons) {
+                val radioButton = radioGroup.getChildAt(i)
+                if ((radioButton is RadioButton) && (radioButton.text == resources.getString(
+                        habitItem.habitType.text
+                    ))
+                ) {
+                    radioButton.isChecked = true
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
-            } else {
-                Toast.makeText(this, "Заполните все поля", Toast.LENGTH_LONG).show()
+            }
+            val countColorButtons = colorRadioGroup.childCount
+            for (i in 0 until countColorButtons) {
+                val radioButton = colorRadioGroup.getChildAt(i)
+                if ((radioButton is RadioButton) && (radioButton.text == habitItem.stringHabitColor)
+                ) {
+                    radioButton.isChecked = true
+                }
+            }
+            val countSpinnersChild = habitPriority.count
+            val habitPriorityString = resources.getString(habitItem.habitPriority.text)
+            for (i in 0 until countSpinnersChild) {
+                val spinnerElement = habitPriority.getItemAtPosition(i)
+                if (spinnerElement.toString() == habitPriorityString) {
+                    habitPriority.setSelection(i)
+                }
             }
         }
+    }
+
+    private fun buttonClickListener(elementPosition: Int) {
+        val checkedRadioId = radioGroup.checkedRadioButtonId
+        val checkedRadioColorId = colorRadioGroup.checkedRadioButtonId
+        val habitTitleText = habitTitle.text.toString()
+        val habitDescriptionText = habitDescription.text.toString()
+        val habitFrequencyCountText = habitFrequencyCount.text.toString()
+        val habitFrequencyPeriodText = habitFrequencyPeriod.text.toString()
+        val habitPriorityText = habitPriority.selectedItem.toString()
+        if (checkedRadioColorId != -1 && checkedRadioId != -1 && habitTitleText.isNotEmpty() && habitDescriptionText.isNotEmpty()
+            && habitFrequencyCountText.isNotEmpty() && habitFrequencyPeriodText.isNotEmpty()
+        ) {
+            val checkedButton = findViewById<RadioButton>(checkedRadioId)
+            val checkedColorButton = findViewById<RadioButton>(checkedRadioColorId)
+            if (elementPosition == -1)
+                addHabit(
+                    habitTitleText,
+                    habitDescriptionText,
+                    habitPriorityText,
+                    habitFrequencyCountText,
+                    checkedButton,
+                    habitFrequencyPeriodText,
+                    checkedColorButton
+                )
+            else
+                changeHabit(
+                    elementPosition,
+                    habitTitleText,
+                    habitDescriptionText,
+                    habitPriorityText,
+                    habitFrequencyCountText,
+                    checkedButton,
+                    habitFrequencyPeriodText,
+                    checkedColorButton
+                )
+            finish()
+        }
+        else {
+            Toast.makeText(this, Constants.toastAllFieldsText, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun addHabit(
+        habitTitleText: String,
+        habitDescriptionText: String,
+        habitPriorityText: String,
+        habitFrequencyCountText: String,
+        checkedButton: RadioButton,
+        habitFrequencyPeriodText: String,
+        checkedColorButton: RadioButton
+    ) {
+        HabitsList.addHabit(
+            HabitInformation(
+                HabitsList.size(),
+                habitTitleText, habitDescriptionText,
+                HabitPriority.toEnum(habitPriorityText),
+                HabitType.toEnum(checkedButton.text.toString()),
+                habitFrequencyCountText.toInt(),
+                habitFrequencyPeriodText,
+                if (checkedColorButton.text.toString() == Constants.redColorText) {
+                    Color.rgb(255, 0, 0)
+                } else
+                    Color.rgb(133, 200, 55),
+                checkedColorButton.text.toString()
+            )
+        )
+    }
+
+    private fun changeHabit(
+        elementPosition: Int,
+        habitTitleText: String,
+        habitDescriptionText: String,
+        habitPriorityText: String,
+        habitFrequencyCountText: String,
+        checkedButton: RadioButton,
+        habitFrequencyPeriodText: String,
+        checkedColorButton: RadioButton
+    ) {
+
+        HabitsList.changeHabit(
+            elementPosition, HabitInformation(
+                HabitsList.getHabits()[elementPosition].id,
+                habitTitleText, habitDescriptionText,
+                HabitPriority.toEnum(habitPriorityText),
+                HabitType.toEnum(checkedButton.text.toString()),
+                habitFrequencyCountText.toInt(),
+                habitFrequencyPeriodText,
+                if (checkedColorButton.text.toString() == Constants.redColorText) {
+                    Color.rgb(255, 0, 0)
+                } else
+                    Color.rgb(133, 200, 55),
+                checkedColorButton.text.toString()
+
+            )
+        )
+
     }
 }

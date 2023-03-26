@@ -1,19 +1,16 @@
 package com.example.habits
 
-enum class HabitType {
-    Good, Bad;
+import androidx.annotation.StringRes
 
-    companion object{
-        fun toRus(habitType: HabitType): String {
-            return when (habitType){
-                Good -> "Хорошая"
-                Bad -> "Плохая"
-            }
-        }
-        fun toEnum(type: String): HabitType{
-            return when (type){
-                "Хорошая" -> Good
-                "Плохая" -> Bad
+enum class HabitType(@StringRes val text: Int) {
+    Good(R.string.good_habit), Bad(R.string.bad_habit);
+
+    companion object {
+
+        fun toEnum(type: String): HabitType {
+            return when (type) {
+                Constants.goodTypeText -> Good
+                Constants.badTypeText -> Bad
                 else -> Good
             }
         }

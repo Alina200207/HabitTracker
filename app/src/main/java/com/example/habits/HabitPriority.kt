@@ -1,24 +1,20 @@
 package com.example.habits
 
-enum class HabitPriority {
-    Low,
-    Medium,
-    High;
+import androidx.annotation.StringRes
+
+enum class HabitPriority(@StringRes val text: Int) {
+
+    Low(R.string.low_priority),
+    Medium(R.string.medium_priority),
+    High(R.string.high_priority);
 
 
     companion object{
-        fun toRus(habitPriority: HabitPriority): String {
-            return when (habitPriority){
-                Low -> "Низкий"
-                Medium -> "Средний"
-                High -> "Высокий"
-            }
-        }
         fun toEnum(priority: String): HabitPriority{
             return when (priority){
-                "Низкий" -> Low
-                "Средний" -> Medium
-                "Высокий" -> High
+                Constants.lowPriorityText -> Low
+                Constants.mediumPriorityText -> Medium
+                Constants.highPriorityText -> High
                 else -> Low
             }
         }

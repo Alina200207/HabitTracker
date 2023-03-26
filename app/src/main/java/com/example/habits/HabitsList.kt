@@ -2,16 +2,23 @@ package com.example.habits
 
 object HabitsList {
     private val habits: ArrayList<HabitInformation> = ArrayList()
-    fun addHabit(habit: HabitInformation){
+    fun addHabit(habit: HabitInformation) {
         habits.add(habit)
     }
-    fun removeHabit(index: Int){
+
+    fun removeHabit(index: Int) {
         habits.removeAt(index)
     }
-    fun getHabits(): ArrayList<HabitInformation>{
+
+    fun getHabits(): ArrayList<HabitInformation> {
         return habits
     }
-    fun changeHabit(position: Int, habit: HabitInformation){
+
+    fun changeHabit(position: Int, habit: HabitInformation) {
         habits[position] = habit
+    }
+
+    fun size(): Int {
+        return habits.size
     }
 }

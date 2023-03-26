@@ -7,7 +7,7 @@
     <string name="habit_description">Описание: %s</string>
     <string name="habit_priority">Приоритет: %s</string>
     <string name="habit_type">Тип: %s</string>
-    <string name="habit_frequency">Периодичность: %d раз%s в %s</string>
+    <string name="habit_frequency">Периодичность: %d %s в %s</string>
     <string name="adding_habit">adding_habit</string>
     <string name="habit_name">Название привычки</string>
     <string name="description">Описание</string>
@@ -28,6 +28,9 @@
     <string name="green_color_text">Зеленый</string>
     <string name="blue_color_text">Синий</string>
     <string name="yellow_color_text">Желтый</string>
+    <string name="low_priority">Низкий</string>
+    <string name="medium_priority">Средний</string>
+    <string name="high_priority">Высокий</string>
     <string-array name="priorities">
         <item>Высокий</item>
         <item>Средний</item>
@@ -39,4 +42,12 @@
         <item>Месяц</item>
         <item>Год</item>
     </string-array>
+    <plurals name="pluralsForCount">
+        <item quantity="zero">раз</item>
+        <item quantity="one">раз</item>
+        <item quantity="two">раза</item>
+        <item quantity="few">раза</item>
+        <item quantity="many">раз</item>
+        <item quantity="other">раз</item>
+    </plurals>
 </resources>
