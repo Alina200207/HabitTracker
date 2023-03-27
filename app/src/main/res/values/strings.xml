@@ -31,6 +31,9 @@
     <string name="low_priority">Низкий</string>
     <string name="medium_priority">Средний</string>
     <string name="high_priority">Высокий</string>
+    <string name="nav_header_title">Заголовок</string>
+    <string name="menu_home">Домашний экран</string>
+    <string name="menu_app_info">Информация о приложении</string>
     <string-array name="priorities">
         <item>Высокий</item>
         <item>Средний</item>

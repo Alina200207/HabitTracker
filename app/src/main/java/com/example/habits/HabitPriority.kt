@@ -9,9 +9,9 @@ enum class HabitPriority(@StringRes val text: Int) {
     High(R.string.high_priority);
 
 
-    companion object{
-        fun toEnum(priority: String): HabitPriority{
-            return when (priority){
+    companion object {
+        fun toEnum(priority: String): HabitPriority {
+            return when (priority) {
                 Constants.lowPriorityText -> Low
                 Constants.mediumPriorityText -> Medium
                 Constants.highPriorityText -> High

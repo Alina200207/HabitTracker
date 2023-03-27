@@ -2,14 +2,19 @@ package com.example.habits
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import com.example.habits.databinding.ActivityHabitAddendumBinding
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.navArgs
+import com.example.habits.databinding.FragmentHabitAddendumBinding
 
 
-class HabitAddendum : AppCompatActivity() {
+class HabitAddendumFragment : Fragment() {
 
-    private lateinit var binding: ActivityHabitAddendumBinding
+    private lateinit var binding: FragmentHabitAddendumBinding
     private lateinit var habitTitle: EditText
     private lateinit var habitDescription: EditText
     private lateinit var radioGroup: RadioGroup
@@ -22,8 +27,20 @@ class HabitAddendum : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHabitAddendumBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentHabitAddendumBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         habitTitle = binding.editHabitName
         habitDescription = binding.editHabitDescription
         radioGroup = binding.editTypeRadioGroup
@@ -32,14 +49,9 @@ class HabitAddendum : AppCompatActivity() {
         habitFrequencyPeriod = binding.editPeriod
         button = binding.saveButton
         colorRadioGroup = binding.editColorRadioGroup
-
-        val extras = intent.extras
-        var elementPosition = -1
-        if (extras != null) {
-            val position = extras.getInt(Constants.positionExtraName)
-            elementPosition = position
-            setHabitState(position)
-        }
+        val args: HabitAddendumFragmentArgs by navArgs()
+        val elementPosition = args.position
+        setHabitState(elementPosition)
 //        choseButton.setOnClickListener{
 //            val fragmentManager = supportFragmentManager
 //            val transaction = fragmentManager.beginTransaction()
@@ -47,7 +59,7 @@ class HabitAddendum : AppCompatActivity() {
 //            transaction.add(R.id.constraint, fragment).commit()
 //        }
         button.setOnClickListener {
-            buttonClickListener(elementPosition)
+            buttonClickListener(elementPosition, view)
         }
     }
 
@@ -87,7 +99,7 @@ class HabitAddendum : AppCompatActivity() {
         }
     }
 
-    private fun buttonClickListener(elementPosition: Int) {
+    private fun buttonClickListener(elementPosition: Int, view: View) {
         val checkedRadioId = radioGroup.checkedRadioButtonId
         val checkedRadioColorId = colorRadioGroup.checkedRadioButtonId
         val habitTitleText = habitTitle.text.toString()
@@ -98,8 +110,8 @@ class HabitAddendum : AppCompatActivity() {
         if (checkedRadioColorId != -1 && checkedRadioId != -1 && habitTitleText.isNotEmpty() && habitDescriptionText.isNotEmpty()
             && habitFrequencyCountText.isNotEmpty() && habitFrequencyPeriodText.isNotEmpty()
         ) {
-            val checkedButton = findViewById<RadioButton>(checkedRadioId)
-            val checkedColorButton = findViewById<RadioButton>(checkedRadioColorId)
+            val checkedButton = view.findViewById<RadioButton>(checkedRadioId)
+            val checkedColorButton = view.findViewById<RadioButton>(checkedRadioColorId)
             if (elementPosition == -1)
                 addHabit(
                     habitTitleText,
@@ -121,10 +133,10 @@ class HabitAddendum : AppCompatActivity() {
                     habitFrequencyPeriodText,
                     checkedColorButton
                 )
-            finish()
-        }
-        else {
-            Toast.makeText(this, Constants.toastAllFieldsText, Toast.LENGTH_LONG).show()
+            view.findNavController().navigateUp()
+        } else {
+            Toast.makeText(this.requireContext(), Constants.toastAllFieldsText, Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -139,7 +151,7 @@ class HabitAddendum : AppCompatActivity() {
     ) {
         HabitsList.addHabit(
             HabitInformation(
-                HabitsList.size(),
+                Id.getId(),
                 habitTitleText, habitDescriptionText,
                 HabitPriority.toEnum(habitPriorityText),
                 HabitType.toEnum(checkedButton.text.toString()),
