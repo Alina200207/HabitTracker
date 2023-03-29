@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <data>
 
@@ -12,6 +13,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".HabitAddendumFragment">
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/toolbar_addendum"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:background="@color/green"-->
+<!--            android:elevation="4dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            android:theme="@style/Theme.HabitsWithoutWindowBar"-->
+<!--            app:popupTheme="@style/Theme.HabitsWithoutWindowBar"/>-->
 
         <TextView
             android:id="@+id/title_add_screen"

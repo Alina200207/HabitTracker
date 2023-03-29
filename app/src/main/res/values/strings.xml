@@ -17,6 +17,8 @@
     <string name="type">Тип</string>
     <string name="good_habit">Хорошая</string>
     <string name="bad_habit">Плохая</string>
+    <string name="good_habits">Хорошие</string>
+    <string name="bad_habits">Плохие</string>
     <string name="edit_frequency">Периодичность</string>
     <string name="count">Количество:</string>
     <string name="_2">2</string>
@@ -34,6 +36,12 @@
     <string name="nav_header_title">Заголовок</string>
     <string name="menu_home">Домашний экран</string>
     <string name="menu_app_info">Информация о приложении</string>
+    <string name="habit_tracker">Трекер привычек</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="info">Трекер привычек - приложение, которое поможет вам отслеживать выполнение привычек.</string>
+    <string name="version">Версия приложения: %d.%d</string>
+    <string name="add_habit">Добавление привычки</string>
     <string-array name="priorities">
         <item>Высокий</item>
         <item>Средний</item>

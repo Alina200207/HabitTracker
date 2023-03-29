@@ -4,11 +4,11 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/viewPagerFragment"
             android:icon="@drawable/home"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_info"
+            android:id="@+id/appInfoFragment"
             android:icon="@drawable/info"
             android:title="@string/menu_app_info" />
     </group>

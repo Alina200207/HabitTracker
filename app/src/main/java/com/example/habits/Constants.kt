@@ -8,6 +8,7 @@ object Constants {
     val lowPriorityText = "Низкий"
     val mediumPriorityText = "Средний"
     val highPriorityText = "Высокий"
-    val goodTypeText = "Хороший"
-    val badTypeText = "Плохой"
+    val goodTypeText = "Хорошая"
+    val badTypeText = "Плохая"
+    val habitTypesCount = 2
 }

@@ -23,11 +23,12 @@ class HabitsListFragment : Fragment() {
     private lateinit var adapter: HabitCardsAdapter
     private lateinit var habitsViewModel: HabitsViewModel
     private lateinit var binding: FragmentHabitsListBinding
+    private lateinit var listHabitType: HabitType
     private val listener = HabitCardsAdapter.OnClickListener { position ->
         findNavController()
             .navigate(
-                HabitsListFragmentDirections.actionHabitsListFragmentToHabitAddendumFragment(
-                    position
+                ViewPagerFragmentDirections.actionViewPagerFragmentToHabitAddendumFragment(
+                    position, resources.getString(listHabitType.text)
                 )
             )
     }
@@ -42,47 +43,50 @@ class HabitsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHabitsListBinding.inflate(inflater, container, false)
+        val mainActivity = activity as MainActivity
+        mainActivity.supportActionBar?.title = resources.getString(R.string.menu_home)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.recyclerView
-        val fab: FloatingActionButton = binding.fab
-        fab.setOnClickListener {
-            Log.i("main", "ki")
-            findNavController().navigate(
-                HabitsListFragmentDirections.actionHabitsListFragmentToHabitAddendumFragment(
-                    -1
-                )
-            )
-        }
+//        val fab: FloatingActionButton = binding.fab
+//        fab.setOnClickListener {
+//            findNavController().navigate(
+//                HabitsListFragmentDirections.actionHabitsListFragmentToHabitAddendumFragment(
+//                    -1
+//                )
+//            )
+//        }
     }
 
 
     override fun onResume() {
         super.onResume()
         adapter = HabitCardsAdapter(
-            HabitsList.getHabits(),
+            when (listHabitType) {
+                HabitType.Good -> HabitsList.getGoodHabits()
+                HabitType.Bad -> HabitsList.getBadHabits()
+            },
             this,
             listener
         )
-        habitsViewModel = ViewModelProvider(this)[HabitsViewModel::class.java]
+        habitsViewModel = when (listHabitType) {
+            HabitType.Good -> HabitsViewModel(HabitsList.getGoodHabits())
+            HabitType.Bad -> HabitsViewModel(HabitsList.getBadHabits())
+        }
+//        habitsViewModel = ViewModelProvider(this)[HabitsViewModel::class.java]
         //adapter.submitList(HabitsList.getHabits())
         recyclerView.adapter = adapter
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HabitsListFragment.
-         */
+
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HabitsListFragment().apply {}
+        fun newInstance(habitType: HabitType) =
+            HabitsListFragment().apply {
+                listHabitType = habitType
+            }
     }
 }

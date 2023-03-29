@@ -23,6 +23,7 @@ class HabitAddendumFragment : Fragment() {
     private lateinit var habitFrequencyPeriod: EditText
     private lateinit var button: Button
     private lateinit var colorRadioGroup: RadioGroup
+    private lateinit var habitType: HabitType
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,6 +37,12 @@ class HabitAddendumFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHabitAddendumBinding.inflate(inflater, container, false)
+        val mainActivity = activity as MainActivity
+        mainActivity.changeBehavior()
+        mainActivity.supportActionBar?.title = resources.getString(R.string.add_habit)
+//        mainActivity.supportActionBar?.hide()
+//        mainActivity.setSupportActionBar(binding.toolbarAddendum)
+//        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
         return binding.root
     }
 
@@ -51,7 +58,10 @@ class HabitAddendumFragment : Fragment() {
         colorRadioGroup = binding.editColorRadioGroup
         val args: HabitAddendumFragmentArgs by navArgs()
         val elementPosition = args.position
+        habitType = HabitType.toEnum(args.habitType)
         setHabitState(elementPosition)
+
+
 //        choseButton.setOnClickListener{
 //            val fragmentManager = supportFragmentManager
 //            val transaction = fragmentManager.beginTransaction()
@@ -65,11 +75,15 @@ class HabitAddendumFragment : Fragment() {
 
     private fun setHabitState(position: Int) {
         if (position != -1) {
-            val habitItem = HabitsList.getHabits()[position]
+            val habitItem = when (habitType) {
+                HabitType.Good -> HabitsList.getGoodHabits()[position]
+                HabitType.Bad -> HabitsList.getBadHabits()[position]
+            }
             habitTitle.setText(habitItem.habitTitle)
             habitDescription.setText(habitItem.habitDescription)
             habitFrequencyCount.setText(habitItem.habitNumberExecution.toString())
             habitFrequencyPeriod.setText(habitItem.frequency)
+
             val countRadioButtons = radioGroup.childCount
             for (i in 0 until countRadioButtons) {
                 val radioButton = radioGroup.getChildAt(i)
@@ -157,7 +171,7 @@ class HabitAddendumFragment : Fragment() {
                 HabitType.toEnum(checkedButton.text.toString()),
                 habitFrequencyCountText.toInt(),
                 habitFrequencyPeriodText,
-                if (checkedColorButton.text.toString() == Constants.redColorText) {
+                if (checkedColorButton.text.toString() == resources.getString(R.string.red_color_text)) {
                     Color.rgb(255, 0, 0)
                 } else
                     Color.rgb(133, 200, 55),
@@ -178,21 +192,31 @@ class HabitAddendumFragment : Fragment() {
     ) {
 
         HabitsList.changeHabit(
-            elementPosition, HabitInformation(
-                HabitsList.getHabits()[elementPosition].id,
+            elementPosition,
+            HabitInformation(
+                when (habitType) {
+                    HabitType.Good -> HabitsList.getGoodHabits()
+                    HabitType.Bad -> HabitsList.getBadHabits()
+                }[elementPosition].id,
                 habitTitleText, habitDescriptionText,
                 HabitPriority.toEnum(habitPriorityText),
                 HabitType.toEnum(checkedButton.text.toString()),
                 habitFrequencyCountText.toInt(),
                 habitFrequencyPeriodText,
-                if (checkedColorButton.text.toString() == Constants.redColorText) {
+                if (checkedColorButton.text.toString() == resources.getString(R.string.red_color_text)) {
                     Color.rgb(255, 0, 0)
                 } else
                     Color.rgb(133, 200, 55),
                 checkedColorButton.text.toString()
 
-            )
+            ), habitType
         )
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val mainActivity = activity as MainActivity
+        mainActivity.changeBack()
     }
 }

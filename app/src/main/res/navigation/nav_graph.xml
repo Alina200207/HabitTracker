@@ -2,20 +2,10 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/habitsListFragment"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/viewPagerFragment">
 
 
-    <fragment
-        android:id="@+id/habitsListFragment"
-        android:name="com.example.habits.HabitsListFragment"
-        android:label="HabitsListFragment"
-        tools:layout="@layout/fragment_habits_list" >
-
-        <action
-            android:id="@+id/action_habitsListFragment_to_habitAddendumFragment"
-            app:destination="@id/habitAddendumFragment" />
-    </fragment>
     <fragment
         android:id="@+id/habitAddendumFragment"
         android:name="com.example.habits.HabitAddendumFragment"
@@ -24,6 +14,32 @@
         <argument
             android:name="position"
             app:argType="integer" />
+        <argument
+            android:name="habitType"
+            app:argType="string" />
 
+    </fragment>
+    <fragment
+        android:id="@+id/appInfoFragment"
+        android:name="com.example.habits.AppInfoFragment"
+        android:label="AppInfoFragment"
+        tools:layout="@layout/fragment_app_info"/>
+    <fragment
+        android:id="@+id/viewPagerFragment"
+        android:name="com.example.habits.ViewPagerFragment"
+        android:label="fragment_view_pager"
+        tools:layout="@layout/fragment_view_pager" >
+        <action
+            android:id="@+id/action_viewPagerFragment_to_habitAddendumFragment"
+            app:destination="@id/habitAddendumFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/habitsListFragment"
+        android:name="com.example.habits.HabitsListFragment"
+        android:label="HabitsListFragment"
+        tools:layout="@layout/fragment_habits_list">
+        <action
+            android:id="@+id/action_habitsListFragment_to_habitAddendumFragment"
+            app:destination="@id/habitAddendumFragment" />
     </fragment>
 </navigation>
