@@ -16,7 +16,7 @@
             app:argType="integer" />
         <argument
             android:name="habitType"
-            app:argType="string" />
+            app:argType="integer" />
 
     </fragment>
     <fragment

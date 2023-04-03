@@ -42,7 +42,7 @@ class ViewPagerFragment : Fragment() {
         fab.setOnClickListener {
             findNavController().navigate(
                 ViewPagerFragmentDirections.actionViewPagerFragmentToHabitAddendumFragment(
-                    -1, resources.getString(R.string.good_habit)
+                    -1, R.string.good_enum
                 )
             )
         }

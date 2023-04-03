@@ -63,7 +63,7 @@ class HabitAddendumFragment : Fragment() {
         colorRadioGroup = binding.editColorRadioGroup
         val args: HabitAddendumFragmentArgs by navArgs()
         val elementPosition = args.position
-        habitType = HabitType.toEnum(args.habitType)
+        habitType = HabitType.valueOf(resources.getString(args.habitType))
         setHabitState(elementPosition)
 //        для ColorPicker
 //        choseButton.setOnClickListener{

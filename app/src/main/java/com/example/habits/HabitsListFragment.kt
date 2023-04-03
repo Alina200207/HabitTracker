@@ -25,7 +25,7 @@ class HabitsListFragment : Fragment() {
         findNavController()
             .navigate(
                 ViewPagerFragmentDirections.actionViewPagerFragmentToHabitAddendumFragment(
-                    position, resources.getString(listHabitType.text)
+                    position, listHabitType.enum_text
                 )
             )
     }
