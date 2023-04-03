@@ -33,13 +33,4 @@
             android:id="@+id/action_viewPagerFragment_to_habitAddendumFragment"
             app:destination="@id/habitAddendumFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/habitsListFragment"
-        android:name="com.example.habits.HabitsListFragment"
-        android:label="HabitsListFragment"
-        tools:layout="@layout/fragment_habits_list">
-        <action
-            android:id="@+id/action_habitsListFragment_to_habitAddendumFragment"
-            app:destination="@id/habitAddendumFragment" />
-    </fragment>
 </navigation>

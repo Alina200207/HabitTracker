@@ -32,7 +32,6 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/habit_name"
-            android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -57,7 +56,6 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/description"
-            android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@id/edit_habit_name"
             app:layout_constraintTop_toBottomOf="@id/edit_habit_name" />
@@ -82,7 +80,6 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/priority"
-            android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@id/edit_habit_description"
             app:layout_constraintTop_toBottomOf="@id/edit_habit_description" />
@@ -103,7 +100,6 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/type"
-            android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@id/edit_priority_spinner"
             app:layout_constraintTop_toBottomOf="@id/edit_priority_spinner" />
@@ -137,7 +133,6 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/edit_frequency"
-            android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@id/edit_type_radio_group"
             app:layout_constraintTop_toBottomOf="@id/edit_type_radio_group" />
@@ -157,7 +152,6 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="0dp"
                 android:text="@string/count"
-                android:textColor="@color/black"
                 android:textSize="15sp" />
 
             <EditText
@@ -190,7 +184,6 @@
                 android:paddingStart="8dp"
                 android:paddingEnd="0dp"
                 android:text="@string/period"
-                android:textColor="@color/black"
                 android:textSize="15sp" />
 
             <EditText
@@ -224,7 +217,6 @@
             android:layout_height="wrap_content"
             android:padding="8dp"
             android:text="@string/color"
-            android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="@id/layout_period"
             app:layout_constraintTop_toBottomOf="@id/layout_period" />

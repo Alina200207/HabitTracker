@@ -4,9 +4,9 @@ import androidx.annotation.StringRes
 
 enum class HabitPriority(@StringRes val text: Int) {
 
-    Low(R.string.low_priority),
+    High(R.string.high_priority),
     Medium(R.string.medium_priority),
-    High(R.string.high_priority);
+    Low(R.string.low_priority);
 
 
     companion object {

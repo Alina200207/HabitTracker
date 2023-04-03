@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.drawerlayout.widget.DrawerLayout.DrawerListener
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -37,26 +38,41 @@ class MainActivity : AppCompatActivity() {
         navController = navHostFragment.navController
         drawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-        drawerToggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-        toolbar.title = resources.getString(R.string.habit_tracker)
-        drawerLayout.addDrawerListener(drawerToggle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        navView.setNavigationItemSelectedListener {
-//            when(it.itemId){
-//                R.id.habitsListFragment -> navController.navigateUp()
-//                R.id.appInfoFragment -> navController.navigateUp()
-//                else -> navController.navigateUp()
-//            }
-//        }
-//        val onBackPressedCallback = object : OnBackPressedCallback(true) {
-//            override fun handleOnBackPressed() {
-//                navController.navigateUp()
-//            }
-//        }
+        drawerToggle =
+            ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close)
+        drawerLayout.addDrawerListener(object : DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+            }
 
-//        this.onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-        setupActionBarWithNavController(navController, drawerLayout)
+            override fun onDrawerOpened(drawerView: View) {
+                toolbar.setNavigationOnClickListener {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+
+                }
+                drawerToggle.syncState()
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+                drawerToggle.isDrawerIndicatorEnabled = true
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                toolbar.setNavigationOnClickListener {
+                    drawerLayout.openDrawer(GravityCompat.START)
+                }
+                drawerToggle.syncState()
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+            }
+
+        })
+        drawerLayout.addDrawerListener(drawerToggle)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.viewPagerFragment, R.id.appInfoFragment), drawerLayout
+        )
+        //setupActionBarWithNavController(navController, drawerLayout)
+        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         navView.setupWithNavController(navController)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
         drawerToggle.syncState()
     }
 
@@ -64,32 +80,30 @@ class MainActivity : AppCompatActivity() {
     fun changeBehavior() {
         drawerToggle.isDrawerIndicatorEnabled = false
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        drawerToggle.toolbarNavigationClickListener =
-            View.OnClickListener {
-                navController.navigateUp()
-            }
+        toolbar.setNavigationOnClickListener {
+            navController.navigateUp()        }
     }
 
     fun changeBack() {
         drawerToggle.isDrawerIndicatorEnabled = true
-//        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
         drawerToggle.syncState()
-        toolbar.title = resources.getString(R.string.habit_tracker)
-        drawerToggle.toolbarNavigationClickListener =
-            View.OnClickListener {
-                drawerLayout.openDrawer(GravityCompat.START)
-            }
-        Log.i("main", "kl")
+        toolbar.setNavigationOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (drawerToggle.onOptionsItemSelected(item))
+        if (drawerToggle.onOptionsItemSelected(item)) {
             return true
+        }
+        drawerLayout.closeDrawers()
         return super.onOptionsItemSelected(item)
     }
 
 
     override fun onSupportNavigateUp(): Boolean {
+
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }
