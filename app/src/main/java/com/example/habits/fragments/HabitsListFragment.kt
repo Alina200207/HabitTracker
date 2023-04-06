@@ -1,39 +1,40 @@
-package com.example.habits
+package com.example.habits.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.habits.*
+import com.example.habits.adapters.HabitCardsAdapter
 import com.example.habits.databinding.FragmentHabitsListBinding
+import com.example.habits.entities.HabitType
+import com.example.habits.viewmodels.HabitsListViewModel
 
 
-/**
- * A simple [Fragment] subclass.
- * Use the [HabitsListFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class HabitsListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
+    private var listHabitType = HabitType.Good
+    private val habitsViewModel: HabitsListViewModel by viewModels {
+        HabitsListViewModel.Companion.Factory(
+            listHabitType
+        )
+    }
     private lateinit var adapter: HabitCardsAdapter
-    private lateinit var habitsViewModel: HabitsListViewModel
     private lateinit var binding: FragmentHabitsListBinding
-    private lateinit var listHabitType: HabitType
     private val listener = HabitCardsAdapter.OnClickListener { position ->
         findNavController()
             .navigate(
                 ViewPagerFragmentDirections.actionViewPagerFragmentToHabitAddendumFragment(
-                    position, listHabitType.enum_text
+                    position, habitsViewModel.getHabitsType().enum_text
                 )
             )
     }
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,30 +49,17 @@ class HabitsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.recyclerView
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        adapter = HabitCardsAdapter(
-            when (listHabitType) {
-                HabitType.Good -> HabitsList.getGoodHabits()
-                HabitType.Bad -> HabitsList.getBadHabits()
-            },
-            this,
-            listener
+        habitsViewModel.habits.observe(
+            viewLifecycleOwner,
+            Observer { list ->
+                adapter = HabitCardsAdapter(list, this, listener)
+                recyclerView.adapter = adapter
+            }
         )
-//        habitsViewModel = when (listHabitType) {
-//            HabitType.Good -> HabitsListViewModel(HabitsList.getGoodHabits())
-//            HabitType.Bad -> HabitsListViewModel(HabitsList.getBadHabits())
-//        }
-//        habitsViewModel = ViewModelProvider(this)[HabitsViewModel::class.java]
-        //adapter.submitList(HabitsList.getHabits())
-        recyclerView.adapter = adapter
     }
+
 
     companion object {
-
         @JvmStatic
         fun newInstance(habitType: HabitType) =
             HabitsListFragment().apply {

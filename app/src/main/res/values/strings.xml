@@ -44,6 +44,13 @@
     <string name="info">Трекер привычек - приложение, которое поможет вам отслеживать выполнение привычек.</string>
     <string name="version">Версия приложения: %d.%d</string>
     <string name="add_habit">Добавление привычки</string>
+    <string name="filterAndSort">Фильтрация и сортировка</string>
+    <string name="find">Найти:</string>
+    <string name="habitTitle">название привычки</string>
+    <string name="sortByTitle">Сортировка названия:</string>
+    <string name="alphabetical_order">В прямом алфавитном порядке</string>
+    <string name="reverse_alphabetical_order">обратный алфавитный порядок</string>
+    <string name="sort_priority">Сортировка приоритетности:</string>
     <string-array name="priorities">
         <item>Высокий</item>
         <item>Средний</item>

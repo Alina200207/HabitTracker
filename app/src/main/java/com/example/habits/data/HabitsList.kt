@@ -1,6 +1,8 @@
-package com.example.habits
+package com.example.habits.data
 
 import android.util.Log
+import com.example.habits.entities.HabitInformation
+import com.example.habits.entities.HabitType
 
 object HabitsList {
     private val goodHabits: ArrayList<HabitInformation> = ArrayList()

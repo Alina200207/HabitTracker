@@ -1,6 +1,7 @@
-package com.example.habits
+package com.example.habits.entities
 
-import android.graphics.Color
+import com.example.habits.entities.HabitPriority
+import com.example.habits.entities.HabitType
 
 data class HabitInformation(
     var id: Int,

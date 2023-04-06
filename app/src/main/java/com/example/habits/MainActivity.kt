@@ -84,6 +84,7 @@ class MainActivity : AppCompatActivity() {
             navController.navigateUp()        }
     }
 
+
     fun changeBack() {
         drawerToggle.isDrawerIndicatorEnabled = true
         supportActionBar?.setDisplayHomeAsUpEnabled(false)

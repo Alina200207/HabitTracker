@@ -1,6 +1,7 @@
-package com.example.habits
+package com.example.habits.entities
 
 import androidx.annotation.StringRes
+import com.example.habits.R
 
 enum class HabitColors(
     @StringRes

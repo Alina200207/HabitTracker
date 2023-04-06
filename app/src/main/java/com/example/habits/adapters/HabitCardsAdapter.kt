@@ -1,10 +1,13 @@
-package com.example.habits
+package com.example.habits.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.habits.entities.HabitInformation
+import com.example.habits.HabitItemDiffCallback
+import com.example.habits.R
 import com.example.habits.databinding.FragmentHabitBinding
 
 class HabitCardsAdapter(

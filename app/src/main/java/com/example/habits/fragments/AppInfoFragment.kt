@@ -1,12 +1,13 @@
-package com.example.habits
+package com.example.habits.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.habits.MainActivity
+import com.example.habits.R
 import com.example.habits.databinding.FragmentAppInfoBinding
-import com.example.habits.databinding.FragmentHabitAddendumBinding
 
 
 class AppInfoFragment : Fragment() {

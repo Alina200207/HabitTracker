@@ -1,4 +1,4 @@
-package com.example.habits
+package com.example.habits.fragments
 
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
 import androidx.core.content.ContextCompat
+import com.example.habits.R
 
 
 class ColorPicker : Fragment() {

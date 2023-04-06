@@ -1,4 +1,4 @@
-package com.example.habits
+package com.example.habits.entities
 
 object Id {
     private var id: Int = 0
