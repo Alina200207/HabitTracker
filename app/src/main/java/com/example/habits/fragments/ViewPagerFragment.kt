@@ -6,15 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.marginBottom
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.habits.*
 import com.example.habits.adapters.ViewPagerFragmentAdapter
-import com.example.habits.adapters.ViewPagerFragmentFilteredAndSortedAdapter
 import com.example.habits.databinding.FragmentViewPagerBinding
 import com.example.habits.entities.HabitType
 import com.example.habits.viewmodels.HabitsListViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -25,14 +27,7 @@ class ViewPagerFragment : Fragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var viewPager: ViewPager2
     private lateinit var adapter: ViewPagerFragmentAdapter
-    private lateinit var bottomSheetLayout: ConstraintLayout
-    private var hasSet = false
-    private lateinit var filteredAndSortedAdapter: ViewPagerFragmentFilteredAndSortedAdapter
-    private val habitsViewModel: HabitsListViewModel by viewModels {
-        HabitsListViewModel.Companion.Factory(
-            HabitType.values()[viewPager.currentItem]
-        )
-    }
+
 
     private val labels by lazy {
         arrayListOf(
@@ -46,7 +41,6 @@ class ViewPagerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentViewPagerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -64,13 +58,34 @@ class ViewPagerFragment : Fragment() {
         tabLayout = binding.tabLayout
         viewPager = binding.viewPager2
         adapter = ViewPagerFragmentAdapter(this)
-        filteredAndSortedAdapter = ViewPagerFragmentFilteredAndSortedAdapter(
-            this
-        )
-        viewPager.adapter = filteredAndSortedAdapter
+        viewPager.adapter = adapter
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = (labels[position])
         }.attach()
+        val bottom = BottomSheetFragment()
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetFrag.bottomSheet)
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_EXPANDED){
+                    val params = binding.linearLayout.layoutParams as ViewGroup.MarginLayoutParams
+                    params.bottomMargin = binding.bottomSheetFrag.bottomSheet.height
+                    binding.linearLayout.requestLayout()
+                }
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED){
+                    val params = binding.linearLayout.layoutParams as ViewGroup.MarginLayoutParams
+                    params.bottomMargin = bottomSheetBehavior.peekHeight
+                    binding.linearLayout.requestLayout()
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+        })
+        childFragmentManager.beginTransaction().apply {
+            add(R.id.bottom_sheet_frag, bottom)
+            commit()
+        }
     }
 
 }

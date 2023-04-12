@@ -13,6 +13,7 @@ import com.example.habits.*
 import com.example.habits.constants.Constants
 import com.example.habits.databinding.FragmentHabitAddendumBinding
 import com.example.habits.entities.HabitColors
+import com.example.habits.entities.HabitInformation
 import com.example.habits.entities.HabitPriority
 import com.example.habits.entities.HabitType
 import com.example.habits.viewmodels.HabitAddendumViewModel
@@ -22,23 +23,28 @@ import kotlin.properties.Delegates
 class HabitAddendumFragment : Fragment() {
 
     private lateinit var binding: FragmentHabitAddendumBinding
-    private lateinit var habitTitle: EditText
-    private lateinit var habitDescription: EditText
-    private lateinit var radioGroup: RadioGroup
-    private lateinit var habitPriority: Spinner
-    private lateinit var habitFrequencyCount: EditText
-    private lateinit var habitFrequencyPeriod: EditText
-    private lateinit var button: Button
+    private lateinit var habitTitleEditText: EditText
+    private lateinit var habitDescriptionEditText: EditText
+    private lateinit var typeRadioGroup: RadioGroup
+    private lateinit var habitPrioritySpinner: Spinner
+    private lateinit var habitFrequencyCountEditText: EditText
+    private lateinit var habitFrequencyPeriodEditText: EditText
+    private lateinit var saveButton: Button
     private lateinit var colorRadioGroup: RadioGroup
+
     private var habitType = HabitType.Good
-    private var checkedRadioId by Delegates.notNull<Int>()
-    private var checkedRadioColorId by Delegates.notNull<Int>()
+    private lateinit var habit: HabitInformation
+    private var position = -1
+
+    private var checkedTypeRadioButtonId by Delegates.notNull<Int>()
+    private var checkedColorRadioButtonId by Delegates.notNull<Int>()
+    private var habitPrioritySelected by Delegates.notNull<Int>()
+
     private lateinit var habitTitleText: String
     private lateinit var habitDescriptionText: String
     private lateinit var habitFrequencyCountText: String
     private lateinit var habitFrequencyPeriodText: String
-    private var position = -1
-    private var habitPrioritySelected by Delegates.notNull<Int>()
+
     private val habitAddendumViewModel: HabitAddendumViewModel by viewModels {
         HabitAddendumViewModel.Companion.Factory(
             position, habitType
@@ -60,17 +66,18 @@ class HabitAddendumFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        habitTitle = binding.editHabitName
-        habitDescription = binding.editHabitDescription
-        radioGroup = binding.editTypeRadioGroup
-        habitPriority = binding.editPrioritySpinner
-        habitFrequencyCount = binding.editCount
-        habitFrequencyPeriod = binding.editPeriod
-        button = binding.saveButton
+        habitTitleEditText = binding.editHabitName
+        habitDescriptionEditText = binding.editHabitDescription
+        typeRadioGroup = binding.editTypeRadioGroup
+        habitPrioritySpinner = binding.editPrioritySpinner
+        habitFrequencyCountEditText = binding.editCount
+        habitFrequencyPeriodEditText = binding.editPeriod
+        saveButton = binding.saveButton
         colorRadioGroup = binding.editColorRadioGroup
         val args: HabitAddendumFragmentArgs by navArgs()
         position = args.position
         habitType = HabitType.valueOf(resources.getString(args.habitType))
+        habit = habitAddendumViewModel.habit.value!!
         setHabitState()
 //        для ColorPicker
 //        choseButton.setOnClickListener{
@@ -79,35 +86,34 @@ class HabitAddendumFragment : Fragment() {
 //            val fragment = ColorPicker()
 //            transaction.add(R.id.constraint, fragment).commit()
 //        }
-        button.setOnClickListener {
+        saveButton.setOnClickListener {
             getInformationFromFields()
             setInformationToViewModel()
-            setHabit(position, view)
+            saveHabit(position, view)
         }
     }
 
     private fun setHabitState() {
         if (position != -1) {
-            habitTitle.setText(habitAddendumViewModel.habitTitle)
-            habitDescription.setText(habitAddendumViewModel.habitDescription)
-            habitFrequencyCount.setText(habitAddendumViewModel.habitFrequencyCount)
-            habitFrequencyPeriod.setText(habitAddendumViewModel.habitFrequencyPeriod)
-            if (habitAddendumViewModel.habitType != 0)
-                setTypeRadioButton()
-            if (habitAddendumViewModel.habitColor.isNotEmpty())
-                setColorRadioButton()
-            if (habitAddendumViewModel.habitPriority != 0)
-                setPrioritySpinner()
+            habitTitleEditText.setText(habit.habitTitle)
+            habitDescriptionEditText.setText(habit.habitDescription)
+            habitFrequencyCountEditText.setText(habit.habitNumberExecution.toString())
+            habitFrequencyPeriodEditText.setText(habit.frequency)
+            setTypeRadioButton()
+            setPrioritySpinner()
+            setColorRadioButton()
         }
     }
 
     private fun setTypeRadioButton() {
-        val countRadioButtons = radioGroup.childCount
+        val countRadioButtons = typeRadioGroup.childCount
         for (i in 0 until countRadioButtons) {
-            val radioButton = radioGroup.getChildAt(i)
-            if ((radioButton is RadioButton) && (radioButton.text == resources.getString(
-                    habitAddendumViewModel.habitType
-                ))
+            val radioButton = typeRadioGroup.getChildAt(i)
+            if ((radioButton is RadioButton) && (radioButton.text == habitAddendumViewModel.habit.value?.habitType?.text?.let {
+                    resources.getString(
+                        it
+                    )
+                })
             ) {
                 radioButton.isChecked = true
             }
@@ -118,7 +124,7 @@ class HabitAddendumFragment : Fragment() {
         val countColorButtons = colorRadioGroup.childCount
         for (i in 0 until countColorButtons) {
             val radioButton = colorRadioGroup.getChildAt(i)
-            if ((radioButton is RadioButton) && (radioButton.text == habitAddendumViewModel.habitColor)
+            if ((radioButton is RadioButton) && (radioButton.text == habit.stringHabitColor)
             ) {
                 radioButton.isChecked = true
             }
@@ -126,65 +132,61 @@ class HabitAddendumFragment : Fragment() {
     }
 
     private fun setPrioritySpinner() {
-        val countSpinnersChild = habitPriority.count
-        val habitPriorityString = resources.getString(habitAddendumViewModel.habitPriority)
+        val countSpinnersChild = habitPrioritySpinner.count
+        val habitPriorityString = resources.getString(habit.habitPriority.text)
         for (i in 0 until countSpinnersChild) {
-            val spinnerElement = habitPriority.getItemAtPosition(i)
+            val spinnerElement = habitPrioritySpinner.getItemAtPosition(i)
             if (spinnerElement.toString() == habitPriorityString) {
-                habitPriority.setSelection(i)
+                habitPrioritySpinner.setSelection(i)
             }
         }
     }
 
     private fun getInformationFromFields() {
-        checkedRadioId = radioGroup.checkedRadioButtonId
-        checkedRadioColorId = colorRadioGroup.checkedRadioButtonId
-        habitTitleText = habitTitle.text.toString()
-        habitDescriptionText = habitDescription.text.toString()
-        habitFrequencyCountText = habitFrequencyCount.text.toString()
-        habitFrequencyPeriodText = habitFrequencyPeriod.text.toString()
-        habitPrioritySelected = habitPriority.selectedItemPosition
+        checkedTypeRadioButtonId = typeRadioGroup.checkedRadioButtonId
+        checkedColorRadioButtonId = colorRadioGroup.checkedRadioButtonId
+        habitTitleText = habitTitleEditText.text.toString()
+        habitDescriptionText = habitDescriptionEditText.text.toString()
+        habitFrequencyCountText = habitFrequencyCountEditText.text.toString()
+        habitFrequencyPeriodText = habitFrequencyPeriodEditText.text.toString()
+        habitPrioritySelected = habitPrioritySpinner.selectedItemPosition
     }
 
-    private fun setInformationToViewModel(){
-        habitAddendumViewModel.habitTitle = habitTitleText
-        habitAddendumViewModel.habitDescription = habitDescriptionText
-        habitAddendumViewModel.habitFrequencyCount = habitFrequencyCountText
-        habitAddendumViewModel.habitFrequencyPeriod = habitFrequencyPeriodText
-        habitAddendumViewModel.habitPriority = HabitPriority.values()[habitPrioritySelected].text
-        if (checkedRadioId != -1) {
-            val checkedButton = view?.findViewById<RadioButton>(checkedRadioId)
-            habitAddendumViewModel.habitType =
-                HabitType.values()[radioGroup.indexOfChild(checkedButton)].text
+    private fun setInformationToViewModel() {
+        val title = habitTitleText
+        val description = habitDescriptionText
+        val frequencyCount = habitFrequencyCountText.toIntOrNull() ?: 0
+        val frequencyPeriod = habitFrequencyPeriodText
+        val priority = HabitPriority.values()[habitPrioritySelected]
+        var type = HabitType.Good
+        var color = HabitColors.Green
+        if (checkedTypeRadioButtonId != -1) {
+            val checkedButton = view?.findViewById<RadioButton>(checkedTypeRadioButtonId)
+            type =
+                HabitType.values()[typeRadioGroup.indexOfChild(checkedButton)]
         }
-        if (checkedRadioColorId != -1) {
-            val checkedColorButton = view?.findViewById<RadioButton>(checkedRadioColorId)
-            habitAddendumViewModel.habitColor =
-                resources.getString(
-                    HabitColors.values()[colorRadioGroup.indexOfChild(checkedColorButton)].text
-                )
+        if (checkedColorRadioButtonId != -1) {
+            val checkedColorButton = view?.findViewById<RadioButton>(checkedColorRadioButtonId)
+            color = HabitColors.values()[colorRadioGroup.indexOfChild(checkedColorButton)]
+
         }
+        habitAddendumViewModel.changeViewModelState(
+            title, description, priority, type, frequencyCount,
+            frequencyPeriod, color, resources.getString(color.text)
+        )
     }
 
     private fun checkFieldsFullness(): Boolean {
-        return (checkedRadioColorId != -1 && checkedRadioId != -1 && habitTitleText.isNotEmpty() && habitDescriptionText.isNotEmpty()
+        return (checkedColorRadioButtonId != -1 && checkedTypeRadioButtonId != -1 && habitTitleText.isNotEmpty() && habitDescriptionText.isNotEmpty()
                 && habitFrequencyCountText.isNotEmpty() && habitFrequencyPeriodText.isNotEmpty())
     }
 
-    private fun setHabit(elementPosition: Int, view: View) {
+    private fun saveHabit(elementPosition: Int, view: View) {
         if (checkFieldsFullness()) {
-            val checkedButton = view.findViewById<RadioButton>(checkedRadioId)
-            val checkedColorButton = view.findViewById<RadioButton>(checkedRadioColorId)
             if (elementPosition == -1)
-                addHabit(
-                    radioGroup.indexOfChild(checkedButton),
-                    colorRadioGroup.indexOfChild(checkedColorButton)
-                )
+                addHabit()
             else
-                changeHabit(
-                    radioGroup.indexOfChild(checkedButton),
-                    colorRadioGroup.indexOfChild(checkedColorButton)
-                )
+                changeHabit()
             view.findNavController().navigateUp()
         } else {
             showToastMessage()
@@ -196,25 +198,13 @@ class HabitAddendumFragment : Fragment() {
             .show()
     }
 
-    private fun addHabit(
-        checkedButtonId: Int,
-        checkedColorButtonId: Int
-    ) {
+    private fun addHabit() {
         habitAddendumViewModel.addHabit(
-            habitPrioritySelected,
-            checkedButtonId,
-            checkedColorButtonId
         )
     }
 
-    private fun changeHabit(
-        checkedButtonId: Int,
-        checkedColorButtonId: Int
-    ) {
+    private fun changeHabit() {
         habitAddendumViewModel.changeHabit(
-            habitPrioritySelected,
-            checkedButtonId,
-            checkedColorButtonId
         )
 
     }

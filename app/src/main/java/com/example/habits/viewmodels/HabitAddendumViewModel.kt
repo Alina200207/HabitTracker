@@ -1,81 +1,71 @@
 package com.example.habits.viewmodels
 
 import android.graphics.Color
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.habits.data.HabitsList
-import com.example.habits.R
 import com.example.habits.entities.*
 
-class HabitAddendumViewModel(private val position: Int, private val previousType: HabitType): ViewModel() {
-    var habitTitle: String = ""
-    var habitDescription: String = ""
-    var habitFrequencyCount: String = ""
-    var habitFrequencyPeriod: String = ""
-    var habitPriority = 0
-    var habitType = 0
-    var habitColor = ""
+class HabitAddendumViewModel(private val position: Int, private val previousType: HabitType) :
+    ViewModel() {
+    private val _habit = MutableLiveData(
+        HabitInformation(
+            0, "", "",
+            HabitPriority.High, HabitType.Good, 0, "", 0, ""
+        )
+    )
+
+    val habit: LiveData<HabitInformation> get() = _habit
 
     init {
-        if (position != -1){
-            val habitItem = when (previousType) {
+        if (position != -1) {
+            _habit.value = when (previousType) {
                 HabitType.Good -> HabitsList.getGoodHabits()[position]
                 HabitType.Bad -> HabitsList.getBadHabits()[position]
             }
-            habitTitle = habitItem.habitTitle
-            habitDescription = habitItem.habitDescription
-            habitFrequencyCount = habitItem.habitNumberExecution.toString()
-            habitFrequencyPeriod = habitItem.frequency
-            habitPriority = habitItem.habitPriority.text
-            habitType = habitItem.habitType.text
-            habitColor = habitItem.stringHabitColor
         }
     }
 
-
-    fun addHabit(habitPrioritySelected: Int, checkedButtonId: Int, checkedColorButtonId: Int){
-        HabitsList.addHabit(
+    fun changeViewModelState(
+        title: String, description: String, priority: HabitPriority,
+        type: HabitType, executionNumber: Int, frequency: String, habitColors: HabitColors, stringColor: String
+    ) {
+        _habit.value = _habit.value?.id?.let {
             HabitInformation(
-                Id.getId(),
-                habitTitle, habitDescription,
-                HabitPriority.values()[habitPrioritySelected],
-                HabitType.values()[checkedButtonId],
-                habitFrequencyCount.toInt(),
-                habitFrequencyPeriod,
-                if (HabitColors.values()[checkedColorButtonId].text == R.string.red_color_text) {
-                    Color.rgb(255, 0, 0)
-                } else
-                    Color.rgb(133, 200, 55),
-                habitColor
-            )
-        )
+                it, title, description, priority,
+                type, executionNumber, frequency,
+                when (habitColors) {
+                    HabitColors.Green -> Color.rgb(0, 255, 0)
+                    HabitColors.Red -> Color.rgb(255, 0, 0)
+                },
+            stringColor)
+        }
     }
 
-    fun changeHabit(habitPrioritySelected: Int, checkedButtonId: Int, checkedColorButtonId: Int){
-        HabitsList.changeHabit(
-            position, HabitInformation(
-                when (previousType) {
-                    HabitType.Good -> HabitsList.getGoodHabits()
-                    HabitType.Bad -> HabitsList.getBadHabits()
-                }[position].id,
-                habitTitle, habitDescription,
-                HabitPriority.values()[habitPrioritySelected],
-                HabitType.values()[checkedButtonId],
-                habitFrequencyCount.toInt(),
-                habitFrequencyPeriod,
-                if (HabitColors.values()[checkedColorButtonId].text == R.string.red_color_text) {
-                    Color.rgb(255, 0, 0)
-                } else
-                    Color.rgb(133, 200, 55),
-                habitColor
-            ), previousType
-        )
+    fun addHabit() {
+        _habit.value?.let {
+            HabitsList.addHabit(
+                it
+            )
+        }
+    }
+
+    fun changeHabit() {
+        _habit.value?.let {
+            HabitsList.changeHabit(
+                position, it, previousType
+            )
+        }
     }
 
     companion object {
-        class Factory(private val position: Int, private val previousType: HabitType): ViewModelProvider.Factory{
+        class Factory(private val position: Int, private val previousType: HabitType) :
+            ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return modelClass.getConstructor(Int::class.java, HabitType::class.java).newInstance(position, previousType)
+                return modelClass.getConstructor(Int::class.java, HabitType::class.java)
+                    .newInstance(position, previousType)
             }
         }
     }

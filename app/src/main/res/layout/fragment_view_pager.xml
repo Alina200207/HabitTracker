@@ -7,24 +7,23 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.ViewPagerFragment">
 
         <LinearLayout
-            android:id="@+id/linearLayout"
+            android:id="@+id/linear_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginBottom="32dp">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/habit_tracker"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:tabBackground="@drawable/tab_background"
                 app:tabGravity="fill"
                 app:tabIndicatorColor="@color/purple_200"
@@ -40,11 +39,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                app:layout_constraintStart_toStartOf="@id/tab_layout"
-                app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
-
-
+                />
         </LinearLayout>
+
+        <include
+            android:id="@+id/bottom_sheet_frag"
+            layout="@layout/fragment_bottom_sheet"
+            app:layout_insetEdge="bottom" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
@@ -54,12 +55,13 @@
             android:backgroundTint="@color/green"
             android:contentDescription="@string/adding_habit"
             app:fabSize="normal"
+            app:layout_anchor="@id/bottom_sheet_frag"
+            app:layout_anchorGravity="top|right|end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/add_plus"
             tools:ignore="ImageContrastCheck" />
 
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -5,8 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.habits.*
@@ -19,18 +18,14 @@ import com.example.habits.viewmodels.HabitsListViewModel
 class HabitsListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var listHabitType = HabitType.Good
-    private val habitsViewModel: HabitsListViewModel by viewModels {
-        HabitsListViewModel.Companion.Factory(
-            listHabitType
-        )
-    }
+    private val habitsViewModel: HabitsListViewModel by activityViewModels()
     private lateinit var adapter: HabitCardsAdapter
     private lateinit var binding: FragmentHabitsListBinding
     private val listener = HabitCardsAdapter.OnClickListener { position ->
         findNavController()
             .navigate(
                 ViewPagerFragmentDirections.actionViewPagerFragmentToHabitAddendumFragment(
-                    position, habitsViewModel.getHabitsType().enum_text
+                    position, listHabitType.enum_text
                 )
             )
     }
@@ -49,13 +44,16 @@ class HabitsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.recyclerView
-        habitsViewModel.habits.observe(
-            viewLifecycleOwner,
-            Observer { list ->
+        when (listHabitType) {
+            HabitType.Good -> habitsViewModel.goodResultHabits.observe(viewLifecycleOwner) { list ->
                 adapter = HabitCardsAdapter(list, this, listener)
                 recyclerView.adapter = adapter
             }
-        )
+            HabitType.Bad -> habitsViewModel.badResultHabits.observe(viewLifecycleOwner) { list ->
+                adapter = HabitCardsAdapter(list, this, listener)
+                recyclerView.adapter = adapter
+            }
+        }
     }
 
 
