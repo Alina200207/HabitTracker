@@ -45,11 +45,11 @@ class HabitsListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = binding.recyclerView
         when (listHabitType) {
-            HabitType.Good -> habitsViewModel.goodResultHabits.observe(viewLifecycleOwner) { list ->
+            HabitType.Good -> habitsViewModel.resultGoodHabits.observe(viewLifecycleOwner) { list ->
                 adapter = HabitCardsAdapter(list, this, listener)
                 recyclerView.adapter = adapter
             }
-            HabitType.Bad -> habitsViewModel.badResultHabits.observe(viewLifecycleOwner) { list ->
+            HabitType.Bad -> habitsViewModel.resultBadHabits.observe(viewLifecycleOwner) { list ->
                 adapter = HabitCardsAdapter(list, this, listener)
                 recyclerView.adapter = adapter
             }

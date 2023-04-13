@@ -1,10 +1,8 @@
 package com.example.habits.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.habits.data.HabitsList
 import com.example.habits.entities.*
 
@@ -54,12 +52,12 @@ class HabitsListViewModel : ViewModel() {
         }).filter { elem -> elem.habitTitle.contains(filter) })
     }
 
-    val goodResultHabits = MediatorLiveData<ArrayList<HabitInformation>>().apply {
+    val resultGoodHabits = MediatorLiveData<ArrayList<HabitInformation>>().apply {
         addSource(goodHabits) { value = updateValue(HabitType.Good) }
         addSource(sortHabits) { value = updateValue(HabitType.Good) }
         addSource(filterHabits) { value = updateValue(HabitType.Good) }
     }
-    val badResultHabits = MediatorLiveData<ArrayList<HabitInformation>>().apply {
+    val resultBadHabits = MediatorLiveData<ArrayList<HabitInformation>>().apply {
         addSource(badHabits) { value = updateValue(HabitType.Bad) }
         addSource(sortHabits) { value = updateValue(HabitType.Bad) }
         addSource(filterHabits) { value = updateValue(HabitType.Bad) }
