@@ -11,7 +11,7 @@ import com.example.habits.R
 import com.example.habits.databinding.FragmentHabitBinding
 
 class HabitCardsAdapter(
-    private val habits: ArrayList<HabitInformation>, val fragment: Fragment,
+    private val habits: List<HabitInformation>, val fragment: Fragment,
     private val onClickListener: OnClickListener
 
 ) :

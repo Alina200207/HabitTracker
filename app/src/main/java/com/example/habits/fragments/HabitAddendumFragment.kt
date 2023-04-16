@@ -44,10 +44,12 @@ class HabitAddendumFragment : Fragment() {
     private lateinit var habitDescriptionText: String
     private lateinit var habitFrequencyCountText: String
     private lateinit var habitFrequencyPeriodText: String
+    private lateinit var application: HabitsApplication
+
 
     private val habitAddendumViewModel: HabitAddendumViewModel by viewModels {
         HabitAddendumViewModel.Companion.Factory(
-            position, habitType
+            position, habitType, application.repository
         )
     }
 
@@ -58,6 +60,7 @@ class HabitAddendumFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHabitAddendumBinding.inflate(inflater, container, false)
+        application = activity?.application as HabitsApplication
         val mainActivity = activity as MainActivity
         mainActivity.changeBehavior()
         mainActivity.supportActionBar?.title = resources.getString(R.string.add_habit)
@@ -168,7 +171,6 @@ class HabitAddendumFragment : Fragment() {
         if (checkedColorRadioButtonId != -1) {
             val checkedColorButton = view?.findViewById<RadioButton>(checkedColorRadioButtonId)
             color = HabitColors.values()[colorRadioGroup.indexOfChild(checkedColorButton)]
-
         }
         habitAddendumViewModel.changeViewModelState(
             title, description, priority, type, frequencyCount,

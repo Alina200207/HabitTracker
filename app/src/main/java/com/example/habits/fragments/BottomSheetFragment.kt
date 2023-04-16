@@ -3,20 +3,24 @@ package com.example.habits.fragments
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.example.habits.HabitsApplication
 import com.example.habits.databinding.FragmentBottomSheetBinding
-import com.example.habits.entities.HabitType
 import com.example.habits.viewmodels.HabitsListViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 
 class BottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetBinding
-    private val habitsViewModel: HabitsListViewModel by activityViewModels()
+    private lateinit var application: HabitsApplication
+    private val habitsViewModel: HabitsListViewModel by activityViewModels {
+        HabitsListViewModel.Companion.Factory(
+            application.repository
+        )
+    }
 
 
 
@@ -25,6 +29,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        application = activity?.application as HabitsApplication
         binding = FragmentBottomSheetBinding.inflate(inflater, container, false)
         return binding.root
     }

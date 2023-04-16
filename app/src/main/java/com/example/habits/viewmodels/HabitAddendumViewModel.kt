@@ -5,14 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.habits.data.HabitsList
+import com.example.habits.database.HabitsRepository
 import com.example.habits.entities.*
 
-class HabitAddendumViewModel(private val position: Int, private val previousType: HabitType) :
+class HabitAddendumViewModel(private val position: Int, private val previousType: HabitType, private val repository: HabitsRepository) :
     ViewModel() {
     private val _habit = MutableLiveData(
         HabitInformation(
-            0, "", "",
+            Id.getId(), "", "",
             HabitPriority.High, HabitType.Good, 0, "", 0, ""
         )
     )
@@ -22,8 +22,8 @@ class HabitAddendumViewModel(private val position: Int, private val previousType
     init {
         if (position != -1) {
             _habit.value = when (previousType) {
-                HabitType.Good -> HabitsList.getGoodHabits()[position]
-                HabitType.Bad -> HabitsList.getBadHabits()[position]
+                HabitType.Good -> repository.goodHabits.value?.get(position)
+                HabitType.Bad -> repository.badHabits.value?.get(position)
             }
         }
     }
@@ -45,27 +45,29 @@ class HabitAddendumViewModel(private val position: Int, private val previousType
     }
 
     fun addHabit() {
-        _habit.value?.let {
-            HabitsList.addHabit(
-                it
-            )
-        }
+        _habit.value?.let { repository.insert(it) }
+//        _habit.value?.let {
+//            HabitsList.addHabit(
+//                it
+//            )
+//        }
     }
 
     fun changeHabit() {
-        _habit.value?.let {
-            HabitsList.changeHabit(
-                position, it, previousType
-            )
-        }
+        _habit.value?.let { repository.update(it) }
+//        _habit.value?.let {
+//            HabitsList.changeHabit(
+//                position, it, previousType
+//            )
+//        }
     }
 
     companion object {
-        class Factory(private val position: Int, private val previousType: HabitType) :
+        class Factory(private val position: Int, private val previousType: HabitType, private val repository: HabitsRepository) :
             ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return modelClass.getConstructor(Int::class.java, HabitType::class.java)
-                    .newInstance(position, previousType)
+                return modelClass.getConstructor(Int::class.java, HabitType::class.java, HabitsRepository::class.java)
+                    .newInstance(position, previousType, repository)
             }
         }
     }

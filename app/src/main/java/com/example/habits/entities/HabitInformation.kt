@@ -1,16 +1,17 @@
 package com.example.habits.entities
 
-import com.example.habits.entities.HabitPriority
-import com.example.habits.entities.HabitType
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "habits")
 data class HabitInformation(
-    var id: Int,
-    var habitTitle: String,
-    var habitDescription: String,
-    var habitPriority: HabitPriority,
-    var habitType: HabitType,
-    var habitNumberExecution: Int,
-    var frequency: String,
-    var habitColor: Int,
-    var stringHabitColor: String
-) : java.io.Serializable
+    @PrimaryKey val id: Int,
+    val habitTitle: String,
+    val habitDescription: String,
+    val habitPriority: HabitPriority,
+    val habitType: HabitType,
+    val habitNumberExecution: Int,
+    val frequency: String,
+    val habitColor: Int,
+    val stringHabitColor: String
+)

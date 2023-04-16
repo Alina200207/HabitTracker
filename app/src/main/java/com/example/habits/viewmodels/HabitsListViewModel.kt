@@ -3,7 +3,8 @@ package com.example.habits.viewmodels
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.habits.data.HabitsList
+import androidx.lifecycle.ViewModelProvider
+import com.example.habits.database.HabitsRepository
 import com.example.habits.entities.*
 
 //sealed class Information() {
@@ -11,13 +12,16 @@ import com.example.habits.entities.*
 //    data class Sorts(val sorts: SortData): Information()
 //}
 
-class HabitsListViewModel : ViewModel() {
-    private var goodHabits = MutableLiveData(HabitsList.getGoodHabits())
-    private var badHabits = MutableLiveData(HabitsList.getBadHabits())
+class HabitsListViewModel(private val repository: HabitsRepository) : ViewModel() {
+//    private var goodHabits = MutableLiveData(HabitsList.getGoodHabits())
+//    private var badHabits = MutableLiveData(HabitsList.getBadHabits())
+    private var goodHabits = repository.goodHabits
+    private var badHabits = repository.badHabits
+
     private var sortHabits = MutableLiveData<SortData>()
     private var filterHabits = MutableLiveData("")
 
-    private fun updateValue(listType: HabitType): ArrayList<HabitInformation>{
+    private fun updateValue(listType: HabitType): List<HabitInformation>{
         var noValue = false
         val habitsList = when(listType){
             HabitType.Bad -> badHabits
@@ -28,10 +32,10 @@ class HabitsListViewModel : ViewModel() {
             noValue = true
         }
         if (noValue) {
-            return ArrayList(habitsList.filter { elem -> elem.habitTitle.contains(filter) })
+            return habitsList.filter { elem -> elem.habitTitle.contains(filter) }
         }
 
-        return ArrayList((when (sort) {
+        return (when (sort) {
             SortData(
                 SortType.Ascending,
                 SortField.Title
@@ -49,15 +53,15 @@ class HabitsListViewModel : ViewModel() {
                 SortField.Priority
             ) -> ArrayList(habitsList.sortedByDescending { it.habitPriority })
             else -> ArrayList(habitsList.sortedBy { it.habitTitle })
-        }).filter { elem -> elem.habitTitle.contains(filter) })
+        }).filter { elem -> elem.habitTitle.contains(filter) }
     }
 
-    val resultGoodHabits = MediatorLiveData<ArrayList<HabitInformation>>().apply {
+    val resultGoodHabits = MediatorLiveData<List<HabitInformation>>().apply {
         addSource(goodHabits) { value = updateValue(HabitType.Good) }
         addSource(sortHabits) { value = updateValue(HabitType.Good) }
         addSource(filterHabits) { value = updateValue(HabitType.Good) }
     }
-    val resultBadHabits = MediatorLiveData<ArrayList<HabitInformation>>().apply {
+    val resultBadHabits = MediatorLiveData<List<HabitInformation>>().apply {
         addSource(badHabits) { value = updateValue(HabitType.Bad) }
         addSource(sortHabits) { value = updateValue(HabitType.Bad) }
         addSource(filterHabits) { value = updateValue(HabitType.Bad) }
@@ -87,5 +91,15 @@ class HabitsListViewModel : ViewModel() {
 
     fun getFilterText(): String{
         return filterHabits.value ?: ""
+    }
+
+    companion object {
+        class Factory(private val repository: HabitsRepository) :
+            ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return modelClass.getConstructor(HabitsRepository::class.java)
+                    .newInstance(repository)
+            }
+        }
     }
 }

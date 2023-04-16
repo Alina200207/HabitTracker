@@ -18,7 +18,12 @@ import com.example.habits.viewmodels.HabitsListViewModel
 class HabitsListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var listHabitType = HabitType.Good
-    private val habitsViewModel: HabitsListViewModel by activityViewModels()
+    private lateinit var application: HabitsApplication
+    private val habitsViewModel: HabitsListViewModel by activityViewModels {
+        HabitsListViewModel.Companion.Factory(
+            application.repository
+        )
+    }
     private lateinit var adapter: HabitCardsAdapter
     private lateinit var binding: FragmentHabitsListBinding
     private val listener = HabitCardsAdapter.OnClickListener { position ->
@@ -36,6 +41,7 @@ class HabitsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHabitsListBinding.inflate(inflater, container, false)
+        application = activity?.application as HabitsApplication
         val mainActivity = activity as MainActivity
         mainActivity.supportActionBar?.title = resources.getString(R.string.menu_home)
         return binding.root
@@ -55,7 +61,7 @@ class HabitsListFragment : Fragment() {
             }
         }
     }
-
+    //при перевороте экрана теряется информация о типе отображаемого экрана вьюпейджера
 
     companion object {
         @JvmStatic
