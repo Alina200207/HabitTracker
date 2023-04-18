@@ -62,8 +62,6 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(R.id.viewPagerFragment, R.id.appInfoFragment), drawerLayout
         )
-        //setupActionBarWithNavController(navController, drawerLayout)
-        //supportActionBar?.setDisplayHomeAsUpEnabled(true)
         navView.setupWithNavController(navController)
         toolbar.setupWithNavController(navController, appBarConfiguration)
         drawerToggle.syncState()

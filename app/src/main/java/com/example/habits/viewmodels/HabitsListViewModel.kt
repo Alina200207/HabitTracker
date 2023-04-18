@@ -7,14 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.habits.database.HabitsRepository
 import com.example.habits.entities.*
 
-//sealed class Information() {
-//    data class Habits(val habits: ArrayList<HabitInformation>): Information()
-//    data class Sorts(val sorts: SortData): Information()
-//}
-
 class HabitsListViewModel(private val repository: HabitsRepository) : ViewModel() {
-//    private var goodHabits = MutableLiveData(HabitsList.getGoodHabits())
-//    private var badHabits = MutableLiveData(HabitsList.getBadHabits())
     private var goodHabits = repository.goodHabits
     private var badHabits = repository.badHabits
 

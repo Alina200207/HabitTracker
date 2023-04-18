@@ -11,8 +11,7 @@ import com.example.habits.entities.*
 class HabitAddendumViewModel(private val position: Int, private val previousType: HabitType, private val repository: HabitsRepository) :
     ViewModel() {
     private val _habit = MutableLiveData(
-        HabitInformation(
-            Id.getId(), "", "",
+        HabitInformation( "", "",
             HabitPriority.High, HabitType.Good, 0, "", 0, ""
         )
     )
@@ -46,20 +45,10 @@ class HabitAddendumViewModel(private val position: Int, private val previousType
 
     fun addHabit() {
         _habit.value?.let { repository.insert(it) }
-//        _habit.value?.let {
-//            HabitsList.addHabit(
-//                it
-//            )
-//        }
     }
 
     fun changeHabit() {
         _habit.value?.let { repository.update(it) }
-//        _habit.value?.let {
-//            HabitsList.changeHabit(
-//                position, it, previousType
-//            )
-//        }
     }
 
     companion object {

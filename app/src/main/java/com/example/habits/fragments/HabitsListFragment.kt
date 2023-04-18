@@ -16,6 +16,7 @@ import com.example.habits.viewmodels.HabitsListViewModel
 
 
 class HabitsListFragment : Fragment() {
+    private val TYPE_KEY = "type"
     private lateinit var recyclerView: RecyclerView
     private var listHabitType = HabitType.Good
     private lateinit var application: HabitsApplication
@@ -35,6 +36,16 @@ class HabitsListFragment : Fragment() {
             )
     }
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            listHabitType = HabitType.valueOf(
+                it.getString(TYPE_KEY)
+                    ?: resources.getString(HabitType.Good.enum_text)
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,13 +72,19 @@ class HabitsListFragment : Fragment() {
             }
         }
     }
-    //при перевороте экрана теряется информация о типе отображаемого экрана вьюпейджера
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(TYPE_KEY, listHabitType.toString())
+    }
 
     companion object {
         @JvmStatic
         fun newInstance(habitType: HabitType) =
             HabitsListFragment().apply {
-                listHabitType = habitType
+                arguments = Bundle().apply {
+                    putString(TYPE_KEY, habitType.toString())
+                }
             }
     }
 }

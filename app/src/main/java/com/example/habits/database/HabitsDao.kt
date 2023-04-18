@@ -8,13 +8,13 @@ import com.example.habits.entities.HabitType
 
 @Dao
 interface HabitsDao {
-    @Query("SELECT * FROM habits")
+    @Query("SELECT * FROM habitsData")
     fun getAll(): LiveData<List<HabitInformation>>
 
-    @Query("SELECT * FROM habits WHERE habitType = :habitType")
+    @Query("SELECT * FROM habitsData WHERE habitType = :habitType")
     fun getHabitsByType(habitType: HabitType): LiveData<List<HabitInformation>>
 
-    @Query("SELECT * FROM habits WHERE id = :id")
+    @Query("SELECT * FROM habitsData WHERE id = :id")
     fun getHabit(id: Int): HabitInformation
 
     @Update
@@ -25,4 +25,5 @@ interface HabitsDao {
 
     @Delete
     fun delete(habit: HabitInformation)
+
 }
