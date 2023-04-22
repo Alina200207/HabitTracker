@@ -28,8 +28,6 @@ class HabitAddendumViewModel(
                 HabitType.Good -> repository.goodHabits.value?.get(position)
                 HabitType.Bad -> repository.badHabits.value?.get(position)
             }
-            Log.i("maini", repository.goodHabits.value?.size.toString())
-            Log.i("maini", _habit.value.toString())
         }
     }
 
