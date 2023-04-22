@@ -6,13 +6,9 @@ import com.example.habits.entities.HabitType
 
 class HabitsRepository(private val habitsDao: HabitsDao) {
 
-    fun getGoodHabits(): LiveData<List<HabitInformation>> {
-        return habitsDao.getHabitsByType(HabitType.Good)
-    }
+    val goodHabits = habitsDao.getHabitsByType(HabitType.Good)
+    val badHabits = habitsDao.getHabitsByType(HabitType.Bad)
 
-    fun getBadHabits(): LiveData<List<HabitInformation>> {
-        return habitsDao.getHabitsByType(HabitType.Bad)
-    }
 
     fun insert(habitInformation: HabitInformation) {
         habitsDao.insertAll(habitInformation)
