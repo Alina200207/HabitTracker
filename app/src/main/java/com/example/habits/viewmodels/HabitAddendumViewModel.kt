@@ -21,8 +21,8 @@ class HabitAddendumViewModel(private val position: Int, private val previousType
     init {
         if (position != -1) {
             _habit.value = when (previousType) {
-                HabitType.Good -> repository.goodHabits.value?.get(position)
-                HabitType.Bad -> repository.badHabits.value?.get(position)
+                HabitType.Good -> repository.getGoodHabits().value?.get(position)
+                HabitType.Bad -> repository.getBadHabits().value?.get(position)
             }
         }
     }

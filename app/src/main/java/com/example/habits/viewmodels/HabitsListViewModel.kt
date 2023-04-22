@@ -8,8 +8,8 @@ import com.example.habits.database.HabitsRepository
 import com.example.habits.entities.*
 
 class HabitsListViewModel(private val repository: HabitsRepository) : ViewModel() {
-    private var goodHabits = repository.goodHabits
-    private var badHabits = repository.badHabits
+    private var goodHabits = repository.getGoodHabits()
+    private var badHabits = repository.getBadHabits()
 
     private var sortHabits = MutableLiveData<SortData>()
     private var filterHabits = MutableLiveData("")

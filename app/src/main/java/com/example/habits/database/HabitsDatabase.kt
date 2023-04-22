@@ -3,6 +3,7 @@ package com.example.habits.database
 import android.content.Context
 import androidx.room.*
 import com.example.habits.HabitTypeConverter
+import com.example.habits.constants.Constants
 import com.example.habits.entities.HabitInformation
 
 @Database(entities = [HabitInformation::class], version = 1)
@@ -19,7 +20,7 @@ abstract class HabitsDatabase: RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     HabitsDatabase::class.java,
-                    "habitsData"
+                    Constants.databaseName
                 ).allowMainThreadQueries().build()
                 INSTANCE = instance
                 instance
