@@ -1,8 +1,9 @@
 package com.example.habits.database
 
-import androidx.lifecycle.LiveData
 import com.example.habits.entities.HabitInformation
 import com.example.habits.entities.HabitType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class HabitsRepository(private val habitsDao: HabitsDao) {
 
@@ -10,12 +11,12 @@ class HabitsRepository(private val habitsDao: HabitsDao) {
     val badHabits = habitsDao.getHabitsByType(HabitType.Bad)
 
 
-    fun insert(habitInformation: HabitInformation) {
-        habitsDao.insertAll(habitInformation)
+    suspend fun insert(habitInformation: HabitInformation) {
+        withContext(Dispatchers.IO) { habitsDao.insertAll(habitInformation) }
     }
 
-    fun update(habitInformation: HabitInformation) {
-        habitsDao.updateHabits(habitInformation)
+    suspend fun update(habitInformation: HabitInformation) {
+        withContext(Dispatchers.IO) { habitsDao.updateHabits(habitInformation) }
     }
 
 }
