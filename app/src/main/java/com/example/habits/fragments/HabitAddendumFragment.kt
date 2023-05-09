@@ -1,6 +1,7 @@
 package com.example.habits.fragments
 
 import android.os.Bundle
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,12 +30,11 @@ class HabitAddendumFragment : Fragment() {
     private lateinit var habitPrioritySpinner: Spinner
     private lateinit var habitFrequencyCountEditText: EditText
     private lateinit var habitFrequencyPeriodEditText: EditText
-    private lateinit var saveButton: Button
+    private lateinit var save: ImageButton
+    private lateinit var delete: ImageButton
     private lateinit var colorRadioGroup: RadioGroup
 
-    private var habitType = HabitType.Good
-    private lateinit var habit: HabitInformation
-    private var position = -1
+    private var habitId = -1L
 
     private var checkedTypeRadioButtonId by Delegates.notNull<Int>()
     private var checkedColorRadioButtonId by Delegates.notNull<Int>()
@@ -49,7 +49,7 @@ class HabitAddendumFragment : Fragment() {
 
     private val habitAddendumViewModel: HabitAddendumViewModel by viewModels {
         HabitAddendumViewModel.Companion.Factory(
-            position, habitType, application.repository
+            habitId, application.repository, application.serverRepository, application.appScope
         )
     }
 
@@ -62,26 +62,27 @@ class HabitAddendumFragment : Fragment() {
         binding = FragmentHabitAddendumBinding.inflate(inflater, container, false)
         application = activity?.application as HabitsApplication
         val mainActivity = activity as MainActivity
-        mainActivity.changeBehavior()
+        mainActivity.changeDrawerBehavior()
         mainActivity.supportActionBar?.title = resources.getString(R.string.add_habit)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val args: HabitAddendumFragmentArgs by navArgs()
+        habitId = args.id
         habitTitleEditText = binding.editHabitName
         habitDescriptionEditText = binding.editHabitDescription
         typeRadioGroup = binding.editTypeRadioGroup
         habitPrioritySpinner = binding.editPrioritySpinner
         habitFrequencyCountEditText = binding.editCount
         habitFrequencyPeriodEditText = binding.editPeriod
-        saveButton = binding.saveButton
+        save = binding.save
+        delete = binding.delete
         colorRadioGroup = binding.editColorRadioGroup
-        val args: HabitAddendumFragmentArgs by navArgs()
-        position = args.position
-        habitType = HabitType.valueOf(resources.getString(args.habitType))
-        habit = habitAddendumViewModel.habit.value!!
-        setHabitState()
+        habitAddendumViewModel.request.observe(viewLifecycleOwner){
+            habit -> setHabitState(habit)
+        }
 //        для ColorPicker
 //        choseButton.setOnClickListener{
 //            val fragmentManager = supportFragmentManager
@@ -89,22 +90,25 @@ class HabitAddendumFragment : Fragment() {
 //            val fragment = ColorPicker()
 //            transaction.add(R.id.constraint, fragment).commit()
 //        }
-        saveButton.setOnClickListener {
+        save.setOnClickListener {
             getInformationFromFields()
             setInformationToViewModel()
-            saveHabit(position, view)
+            saveHabit(habitId, view)
+        }
+        delete.setOnClickListener{
+            deleteHabit(view)
         }
     }
 
-    private fun setHabitState() {
-        if (position != -1) {
+    private fun setHabitState(habit: HabitInformation) {
+        if (habitId != -1L) {
             habitTitleEditText.setText(habit.habitTitle)
             habitDescriptionEditText.setText(habit.habitDescription)
             habitFrequencyCountEditText.setText(habit.habitNumberExecution.toString())
-            habitFrequencyPeriodEditText.setText(habit.frequency)
+            habitFrequencyPeriodEditText.setText(habit.frequency.toString())
             setTypeRadioButton()
-            setPrioritySpinner()
-            setColorRadioButton()
+            setPrioritySpinner(habit.habitPriority)
+            setColorRadioButton(habit.stringHabitColor)
         }
     }
 
@@ -112,7 +116,7 @@ class HabitAddendumFragment : Fragment() {
         val countRadioButtons = typeRadioGroup.childCount
         for (i in 0 until countRadioButtons) {
             val radioButton = typeRadioGroup.getChildAt(i)
-            if ((radioButton is RadioButton) && (radioButton.text == habitAddendumViewModel.habit.value?.habitType?.text?.let {
+            if ((radioButton is RadioButton) && (radioButton.text == habitAddendumViewModel.request.value?.habitType?.text?.let {
                     resources.getString(
                         it
                     )
@@ -123,20 +127,20 @@ class HabitAddendumFragment : Fragment() {
         }
     }
 
-    private fun setColorRadioButton() {
+    private fun setColorRadioButton(habitColor: String) {
         val countColorButtons = colorRadioGroup.childCount
         for (i in 0 until countColorButtons) {
             val radioButton = colorRadioGroup.getChildAt(i)
-            if ((radioButton is RadioButton) && (radioButton.text == habit.stringHabitColor)
+            if ((radioButton is RadioButton) && (radioButton.text == habitColor)
             ) {
                 radioButton.isChecked = true
             }
         }
     }
 
-    private fun setPrioritySpinner() {
+    private fun setPrioritySpinner(habitPriority: HabitPriority) {
         val countSpinnersChild = habitPrioritySpinner.count
-        val habitPriorityString = resources.getString(habit.habitPriority.text)
+        val habitPriorityString = resources.getString(habitPriority.text)
         for (i in 0 until countSpinnersChild) {
             val spinnerElement = habitPrioritySpinner.getItemAtPosition(i)
             if (spinnerElement.toString() == habitPriorityString) {
@@ -159,7 +163,7 @@ class HabitAddendumFragment : Fragment() {
         val title = habitTitleText
         val description = habitDescriptionText
         val frequencyCount = habitFrequencyCountText.toIntOrNull() ?: 0
-        val frequencyPeriod = habitFrequencyPeriodText
+        val frequencyPeriod = habitFrequencyPeriodText.toIntOrNull() ?: 0
         val priority = HabitPriority.values()[habitPrioritySelected]
         var type = HabitType.Good
         var color = HabitColors.Green
@@ -183,9 +187,9 @@ class HabitAddendumFragment : Fragment() {
                 && habitFrequencyCountText.isNotEmpty() && habitFrequencyPeriodText.isNotEmpty())
     }
 
-    private fun saveHabit(elementPosition: Int, view: View) {
+    private fun saveHabit(habitId: Long, view: View) {
         if (checkFieldsFullness()) {
-            if (elementPosition == -1)
+            if (habitId == -1L)
                 addHabit()
             else
                 changeHabit()
@@ -193,6 +197,11 @@ class HabitAddendumFragment : Fragment() {
         } else {
             showToastMessage()
         }
+    }
+
+    private fun deleteHabit(view: View){
+        habitAddendumViewModel.deleteHabit()
+        view.findNavController().navigateUp()
     }
 
     private fun showToastMessage() {
@@ -220,6 +229,6 @@ class HabitAddendumFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         val mainActivity = activity as MainActivity
-        mainActivity.changeBack()
+        mainActivity.changeDrawerBehaviorBack()
     }
 }

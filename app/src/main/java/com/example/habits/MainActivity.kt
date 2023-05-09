@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
@@ -13,6 +14,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
+import com.example.habits.constants.Constants
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -59,6 +62,14 @@ class MainActivity : AppCompatActivity() {
 
         })
         drawerLayout.addDrawerListener(drawerToggle)
+        val headerLayout = navView.getHeaderView(0)
+        val image = headerLayout.findViewById<ImageView>(R.id.image_view)
+        Glide.with(headerLayout)
+            .load(Constants.imageUrl)
+            .placeholder(R.drawable.done_icon)
+            .error(R.drawable.header_error_image)
+            .circleCrop()
+            .into(image)
         val appBarConfiguration = AppBarConfiguration(
             setOf(R.id.viewPagerFragment, R.id.appInfoFragment), drawerLayout
         )
@@ -68,7 +79,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun changeBehavior() {
+    fun changeDrawerBehavior() {
         drawerToggle.isDrawerIndicatorEnabled = false
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
@@ -76,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun changeBack() {
+    fun changeDrawerBehaviorBack() {
         drawerToggle.isDrawerIndicatorEnabled = true
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         drawerToggle.syncState()

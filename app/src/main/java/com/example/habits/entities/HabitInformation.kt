@@ -2,18 +2,21 @@ package com.example.habits.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.habits.constants.Constants
 
-@Entity(tableName = "habitsData")
+@Entity(tableName = Constants.databaseName)
 data class HabitInformation(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) var id: Long = 0,
     val habitTitle: String,
     val habitDescription: String,
     val habitPriority: HabitPriority,
     val habitType: HabitType,
     val habitNumberExecution: Int,
-    val frequency: String,
+    val frequency: Int,
     val habitColor: Int,
-    val stringHabitColor: String
+    val stringHabitColor: String,
+    var isSynced: Boolean = false,
+    var uid: String
 ) {
     constructor(
         habitTitle: String,
@@ -21,7 +24,7 @@ data class HabitInformation(
         habitPriority: HabitPriority,
         habitType: HabitType,
         habitNumberExecution: Int,
-        frequency: String,
+        frequency: Int,
         habitColor: Int,
         stringHabitColor: String
     ) : this(
@@ -33,6 +36,9 @@ data class HabitInformation(
         habitNumberExecution,
         frequency,
         habitColor,
-        stringHabitColor
+        stringHabitColor,
+        false,
+        "0"
     )
+
 }

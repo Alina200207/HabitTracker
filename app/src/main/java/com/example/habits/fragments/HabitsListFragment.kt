@@ -16,7 +16,7 @@ import com.example.habits.viewmodels.HabitsListViewModel
 
 
 class HabitsListFragment : Fragment() {
-    private val TYPE_KEY = "type"
+    private val typeKey = "type"
     private lateinit var recyclerView: RecyclerView
     private var listHabitType = HabitType.Good
     private lateinit var application: HabitsApplication
@@ -27,21 +27,22 @@ class HabitsListFragment : Fragment() {
     }
     private lateinit var adapter: HabitCardsAdapter
     private lateinit var binding: FragmentHabitsListBinding
-    private val listener = HabitCardsAdapter.OnClickListener { position ->
-        findNavController()
-            .navigate(
-                ViewPagerFragmentDirections.actionViewPagerFragmentToHabitAddendumFragment(
-                    position, listHabitType.enum_text
+    private val listener = HabitCardsAdapter.OnClickListener { id ->
+        run {
+            findNavController()
+                .navigate(
+                    ViewPagerFragmentDirections.actionViewPagerFragmentToHabitAddendumFragment(
+                        id
+                    )
                 )
-            )
+        }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             listHabitType = HabitType.valueOf(
-                it.getString(TYPE_KEY)
+                it.getString(typeKey)
                     ?: resources.getString(HabitType.Good.enum_text)
             )
         }
@@ -75,7 +76,7 @@ class HabitsListFragment : Fragment() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(TYPE_KEY, listHabitType.toString())
+        outState.putString(typeKey, listHabitType.toString())
     }
 
     companion object {
@@ -83,7 +84,7 @@ class HabitsListFragment : Fragment() {
         fun newInstance(habitType: HabitType) =
             HabitsListFragment().apply {
                 arguments = Bundle().apply {
-                    putString(TYPE_KEY, habitType.toString())
+                    putString(typeKey, habitType.toString())
                 }
             }
     }

@@ -4,10 +4,10 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.habits.database.HabitsRepository
+import com.example.habits.database.HabitsDatabaseRepository
 import com.example.habits.entities.*
 
-class HabitsListViewModel(private val repository: HabitsRepository) : ViewModel() {
+class HabitsListViewModel(private val repository: HabitsDatabaseRepository) : ViewModel() {
     private var goodHabits = repository.goodHabits
     private var badHabits = repository.badHabits
 
@@ -87,10 +87,10 @@ class HabitsListViewModel(private val repository: HabitsRepository) : ViewModel(
     }
 
     companion object {
-        class Factory(private val repository: HabitsRepository) :
+        class Factory(private val repository: HabitsDatabaseRepository) :
             ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return modelClass.getConstructor(HabitsRepository::class.java)
+                return modelClass.getConstructor(HabitsDatabaseRepository::class.java)
                     .newInstance(repository)
             }
         }

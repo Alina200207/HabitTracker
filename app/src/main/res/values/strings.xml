@@ -7,7 +7,7 @@
     <string name="habit_description">Описание: %s</string>
     <string name="habit_priority">Приоритет: %s</string>
     <string name="habit_type">Тип: %s</string>
-    <string name="habit_frequency">Периодичность: %d %s в %s</string>
+    <string name="habit_frequency">Периодичность: %d %s в %d %s</string>
     <string name="adding_habit">adding_habit</string>
     <string name="habit_name">Название привычки</string>
     <string name="description">Описание</string>
@@ -22,8 +22,8 @@
     <string name="edit_frequency">Периодичность</string>
     <string name="count">Количество:</string>
     <string name="_2">2</string>
-    <string name="period">Период: в </string>
-    <string name="day_period">день</string>
+    <string name="period">Период: </string>
+    <string name="day_period">кол-во дней</string>
     <string name="save_button">Сохранить</string>
     <string name="color">Цвет</string>
     <string name="red_color_text">Красный</string>
@@ -51,6 +51,8 @@
     <string name="alphabetical_order">В прямом алфавитном порядке</string>
     <string name="reverse_alphabetical_order">обратный алфавитный порядок</string>
     <string name="sort_priority">Сортировка приоритетности:</string>
+    <string name="delete">Удалить</string>
+    <string name="image">image</string>
     <string-array name="priorities">
         <item>Высокий</item>
         <item>Средний</item>
@@ -69,5 +71,13 @@
         <item quantity="few">раза</item>
         <item quantity="many">раз</item>
         <item quantity="other">раз</item>
+    </plurals>
+    <plurals name="pluralsForDays">
+        <item quantity="zero">дней</item>
+        <item quantity="one">день</item>
+        <item quantity="two">дня</item>
+        <item quantity="few">дня</item>
+        <item quantity="many">дней</item>
+        <item quantity="other">дней</item>
     </plurals>
 </resources>

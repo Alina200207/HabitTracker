@@ -44,7 +44,11 @@ class HabitCardsAdapter(
                     R.plurals.pluralsForCount,
                     habitCardInformation.habitNumberExecution
                 ),
-                habitCardInformation.frequency
+                habitCardInformation.frequency,
+                resources.getQuantityString(
+                    R.plurals.pluralsForDays,
+                    habitCardInformation.frequency
+                )
             )
         }
     }
@@ -62,10 +66,12 @@ class HabitCardsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = habits[position]
         holder.bind(item)
-        holder.itemView.setOnClickListener { onClickListener.onClick(position) }
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(item.id)
+        }
     }
 
-    class OnClickListener(val clickListener: (position: Int) -> Unit) {
-        fun onClick(position: Int) = clickListener(position)
+    class OnClickListener(val clickListener: (id: Long) -> Unit) {
+        fun onClick(id: Long) = clickListener(id)
     }
 }

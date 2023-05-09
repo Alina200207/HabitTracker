@@ -12,11 +12,8 @@
         android:label="HabitAddendumFragment"
         tools:layout="@layout/fragment_habit_addendum">
         <argument
-            android:name="position"
-            app:argType="integer" />
-        <argument
-            android:name="habitType"
-            app:argType="integer" />
+            android:name="id"
+            app:argType="long" />
 
     </fragment>
     <fragment
