@@ -12,7 +12,7 @@ class HabitAddendumViewModel(
     private val id: Long,
     private val repository: HabitsDatabaseRepository,
     private val serverRepository: HabitsServerRepository,
-    private val coroutineScope: CoroutineScope
+    private val appScope: CoroutineScope
 ) :
     ViewModel() {
     private var _habit = MutableLiveData(
@@ -26,11 +26,11 @@ class HabitAddendumViewModel(
     val request = MediatorLiveData<HabitInformation>().apply {
         fun updateId() {
             habitId.value?.let {
-                repository.getHabitById(it).observeForever { valuet ->
-                    value = when (valuet) {
+                val habit = repository.getHabitById(it)
+                habit.observeOnce { newValue ->
+                    value = when (newValue) {
                         null -> value
-                        else -> valuet
-
+                        else -> newValue
                     }
                 }
             }
@@ -43,6 +43,14 @@ class HabitAddendumViewModel(
         addSource(habitId) { updateId() }
     }
 
+    private fun <T> LiveData<T>.observeOnce(observer: (T?) -> Unit) {
+        observeForever(object: Observer<T> {
+            override fun onChanged(value: T?) {
+                removeObserver(this)
+                observer(value)
+            }
+        })
+    }
 
     init {
         habitId.value = id
@@ -73,7 +81,7 @@ class HabitAddendumViewModel(
 
     fun addHabit() {
         request.value?.let {
-            coroutineScope.launch {
+            appScope.launch {
                 serverRepository.insertOrUpdateHabit(it, repository.insert(it))
             }
         }
@@ -86,7 +94,7 @@ class HabitAddendumViewModel(
             }
         }
         request.value?.let {
-            coroutineScope.launch {
+            appScope.launch {
                 habitId.value?.let { it1 -> serverRepository.insertOrUpdateHabit(it, it1) }
             }
         }
@@ -99,7 +107,7 @@ class HabitAddendumViewModel(
                 viewModelScope.launch {
                     repository.delete(it)
                 }
-                coroutineScope.launch {
+                appScope.launch {
                     serverRepository.deleteHabit(it)
                 }
             }
@@ -109,7 +117,7 @@ class HabitAddendumViewModel(
 
     companion object {
         class Factory(
-            private val position: Long,
+            private val id: Long,
             private val repository: HabitsDatabaseRepository,
             private val serverRepository: HabitsServerRepository,
             private val coroutineScope: CoroutineScope
@@ -123,7 +131,7 @@ class HabitAddendumViewModel(
                     CoroutineScope::class.java
                 )
                     .newInstance(
-                        position,
+                        id,
                         repository,
                         serverRepository,
                         coroutineScope

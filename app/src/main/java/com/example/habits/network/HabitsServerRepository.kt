@@ -21,7 +21,7 @@ class HabitsServerRepository(
             }
             val response = habitsApiService.getHabits()
             if (response.isSuccessful) {
-                habitsDatabaseRepository.deleteAllHabits()
+                habitsDatabaseRepository.deleteAll()
                 habitsDatabaseRepository.insertAll(*(response.body() ?: arrayOf()))
             }
         }

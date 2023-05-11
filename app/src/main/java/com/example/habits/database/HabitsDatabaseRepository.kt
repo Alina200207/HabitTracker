@@ -12,7 +12,9 @@ class HabitsDatabaseRepository(private val habitsDao: HabitsDao) {
     val badHabits = habitsDao.getHabitsByType(HabitType.Bad)
 
     suspend fun insertAll(vararg habits: HabitInformation): List<Long> {
-        return withContext(Dispatchers.IO) { habitsDao.insertAll(*habits) }
+        return withContext(Dispatchers.IO) {
+            habitsDao.insertAll(*habits)
+        }
     }
 
     suspend fun insert(habit: HabitInformation): Long {
@@ -21,21 +23,28 @@ class HabitsDatabaseRepository(private val habitsDao: HabitsDao) {
         }
     }
 
-
     suspend fun update(habit: HabitInformation) {
-        withContext(Dispatchers.IO) { habitsDao.updateHabits(habit) }
+        withContext(Dispatchers.IO) {
+            habitsDao.updateHabits(habit)
+        }
     }
 
     suspend fun getAllHabits(): List<HabitInformation> {
-        return withContext(Dispatchers.IO) { habitsDao.getHabits() }
+        return withContext(Dispatchers.IO) {
+            habitsDao.getHabits()
+        }
     }
 
-    suspend fun deleteAllHabits() {
-        return withContext(Dispatchers.IO) { habitsDao.deleteAll() }
+    suspend fun deleteAll() {
+        return withContext(Dispatchers.IO) {
+            habitsDao.deleteAll()
+        }
     }
 
     suspend fun delete(habit: HabitInformation) {
-        withContext(Dispatchers.IO) { habitsDao.delete(habit) }
+        withContext(Dispatchers.IO) {
+            habitsDao.delete(habit)
+        }
     }
 
     fun getHabitById(id: Long): LiveData<HabitInformation> {
