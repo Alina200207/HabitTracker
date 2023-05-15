@@ -5,7 +5,7 @@ import android.graphics.Color
 object Constants {
     const val toastAllFieldsText = "Заполните все поля"
     const val habitTypesCount = 2
-    const val databaseName = "habitsDatabaseNew"
+    const val database = "habitsDatabaseNewer"
     const val responseTimeRetry = 15000L
     const val error = "okError"
     const val headerAuthorization = "Authorization"

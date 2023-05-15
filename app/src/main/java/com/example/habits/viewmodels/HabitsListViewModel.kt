@@ -19,7 +19,7 @@ class HabitsListViewModel(private val repository: HabitsDatabaseRepository) : Vi
         val habitsList = when(listType){
             HabitType.Bad -> badHabits
             HabitType.Good -> goodHabits
-        }.value ?: arrayListOf()
+        }.value?.filter { habit -> habit.isSynced != ServerSynchronization.NotSynchronizedDeletion } ?: arrayListOf()
         val filter = filterHabits.value ?: ""
         val sort = sortHabits.value ?: {
             noValue = true

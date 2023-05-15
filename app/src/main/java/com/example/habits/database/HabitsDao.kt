@@ -10,14 +10,17 @@ import com.example.habits.entities.HabitType
 @Dao
 interface HabitsDao {
 
-    @Query("SELECT * FROM ${Constants.databaseName}")
+    @Query("SELECT * FROM ${Constants.database}")
     fun getHabits(): List<HabitInformation>
 
-    @Query("SELECT * FROM ${Constants.databaseName} WHERE habitType = :habitType")
+    @Query("SELECT * FROM ${Constants.database} WHERE habitType = :habitType")
     fun getHabitsByType(habitType: HabitType): LiveData<List<HabitInformation>>
 
-    @Query("SELECT * FROM ${Constants.databaseName} WHERE id = :habitId")
+    @Query("SELECT * FROM ${Constants.database} WHERE id = :habitId")
     fun getHabitById(habitId: Long): LiveData<HabitInformation>
+
+    @Query("SELECT * FROM ${Constants.database} WHERE id = :habitId")
+    fun getHabit(habitId: Long): HabitInformation
 
     @Update
     fun updateHabits(vararg habits: HabitInformation)
@@ -31,7 +34,7 @@ interface HabitsDao {
     @Delete
     fun delete(habit: HabitInformation)
 
-    @Query("DELETE FROM ${Constants.databaseName}")
+    @Query("DELETE FROM ${Constants.database}")
     fun deleteAll()
 
 }

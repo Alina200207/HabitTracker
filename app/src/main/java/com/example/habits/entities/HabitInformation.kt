@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.habits.constants.Constants
 
-@Entity(tableName = Constants.databaseName)
+@Entity(tableName = Constants.database)
 data class HabitInformation(
     @PrimaryKey(autoGenerate = true) var id: Long = 0,
     val habitTitle: String,
@@ -15,7 +15,7 @@ data class HabitInformation(
     val frequency: Int,
     val habitColor: Int,
     val stringHabitColor: String,
-    var isSynced: Boolean = false,
+    var isSynced: ServerSynchronization = ServerSynchronization.NotSynchronizedChange,
     var uid: String
 ) {
     constructor(
@@ -37,7 +37,7 @@ data class HabitInformation(
         frequency,
         habitColor,
         stringHabitColor,
-        false,
+        ServerSynchronization.NotSynchronizedChange,
         "0"
     )
 

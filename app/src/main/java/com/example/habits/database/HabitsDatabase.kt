@@ -6,7 +6,7 @@ import com.example.habits.HabitTypeConverter
 import com.example.habits.constants.Constants
 import com.example.habits.entities.HabitInformation
 
-@Database(entities = [HabitInformation::class], version = 1)
+@Database(entities = [HabitInformation::class], version = 1, exportSchema = false)
 @TypeConverters(HabitTypeConverter::class)
 abstract class HabitsDatabase: RoomDatabase() {
     abstract fun habitsDao(): HabitsDao
@@ -20,7 +20,7 @@ abstract class HabitsDatabase: RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     HabitsDatabase::class.java,
-                    Constants.databaseName
+                    Constants.database
                 ).build()
                 INSTANCE = instance
                 instance

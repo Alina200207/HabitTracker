@@ -7,6 +7,7 @@ import com.example.habits.entities.*
 import com.example.habits.network.HabitsServerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import com.example.habits.extensions.observeOnce
 
 class HabitAddendumViewModel(
     private val id: Long,
@@ -43,14 +44,7 @@ class HabitAddendumViewModel(
         addSource(habitId) { updateId() }
     }
 
-    private fun <T> LiveData<T>.observeOnce(observer: (T?) -> Unit) {
-        observeForever(object: Observer<T> {
-            override fun onChanged(value: T?) {
-                removeObserver(this)
-                observer(value)
-            }
-        })
-    }
+
 
     init {
         habitId.value = id
@@ -74,7 +68,7 @@ class HabitAddendumViewModel(
                     HabitColors.Green -> Color.rgb(0, 255, 0)
                     HabitColors.Red -> Color.rgb(255, 0, 0)
                 },
-                stringColor, false, request.value?.uid ?: "0"
+                stringColor, ServerSynchronization.NotSynchronizedChange, request.value?.uid ?: "0"
             )
         }
     }
@@ -82,20 +76,15 @@ class HabitAddendumViewModel(
     fun addHabit() {
         request.value?.let {
             appScope.launch {
-                serverRepository.insertOrUpdateHabit(it, repository.insert(it))
+                serverRepository.insertHabit(it)
             }
         }
     }
 
     fun changeHabit() {
         request.value?.let {
-            viewModelScope.launch {
-                repository.update(it)
-            }
-        }
-        request.value?.let {
             appScope.launch {
-                habitId.value?.let { it1 -> serverRepository.insertOrUpdateHabit(it, it1) }
+                serverRepository.updateHabit(it)
             }
         }
 
@@ -104,9 +93,7 @@ class HabitAddendumViewModel(
     fun deleteHabit() {
         if (habitId.value != -1L) {
             request.value?.let {
-                viewModelScope.launch {
-                    repository.delete(it)
-                }
+                it.isSynced = ServerSynchronization.NotSynchronizedDeletion
                 appScope.launch {
                     serverRepository.deleteHabit(it)
                 }

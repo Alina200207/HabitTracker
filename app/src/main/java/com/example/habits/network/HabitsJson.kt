@@ -4,9 +4,12 @@ import com.example.habits.constants.Constants
 import com.example.habits.entities.HabitInformation
 import com.example.habits.entities.HabitPriority
 import com.example.habits.entities.HabitType
+import com.example.habits.entities.ServerSynchronization
 import com.google.gson.*
 import org.json.JSONArray
 import java.lang.reflect.Type
+import java.sql.Timestamp
+import java.util.Date
 import java.util.UUID
 
 class HabitsJsonSerializer: JsonSerializer<HabitInformation> {
@@ -19,7 +22,7 @@ class HabitsJsonSerializer: JsonSerializer<HabitInformation> {
         val dates = Gson().toJsonTree(listOf(0))
         result.addProperty("color", src?.habitColor)
         result.addProperty("count", src?.habitNumberExecution)
-        result.addProperty("date", 0)
+        result.addProperty("date", (System.currentTimeMillis()/1000).toInt())
         result.addProperty("description", src?.habitDescription)
         result.add("done_dates", dates)
         result.addProperty("frequency", src?.frequency)
@@ -49,7 +52,7 @@ class HabitsJsonDeserializer: JsonDeserializer<HabitInformation> {
             jsonObject?.get("frequency")?.asInt ?: 0,
             color,
             Constants.colors[color] ?: Constants.strGreen,
-            true,
+            ServerSynchronization.SynchronizedChange,
             jsonObject?.get("uid")?.asString ?: UUID.randomUUID().toString()
         )
     }

@@ -50,4 +50,8 @@ class HabitsDatabaseRepository(private val habitsDao: HabitsDao) {
     fun getHabitById(id: Long): LiveData<HabitInformation> {
         return habitsDao.getHabitById(id)
     }
+
+    fun getHabit(id: Long): HabitInformation {
+        return habitsDao.getHabit(id)
+    }
 }
