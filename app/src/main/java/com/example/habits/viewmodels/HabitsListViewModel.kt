@@ -1,15 +1,13 @@
 package com.example.habits.viewmodels
 
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.habits.database.HabitsDatabaseRepository
-import com.example.habits.entities.*
+import androidx.lifecycle.*
+import com.example.data.database.database.HabitsDatabaseRepository
+import com.example.domain.entities.*
+import javax.inject.Inject
 
-class HabitsListViewModel(private val repository: HabitsDatabaseRepository) : ViewModel() {
-    private var goodHabits = repository.goodHabits
-    private var badHabits = repository.badHabits
+class HabitsListViewModel @Inject constructor(private val repository: HabitsDatabaseRepository) : ViewModel() {
+    private var goodHabits = repository.goodHabits.asLiveData()
+    private var badHabits = repository.badHabits.asLiveData()
 
     private var sortHabits = MutableLiveData<SortData>()
     private var filterHabits = MutableLiveData("")
@@ -86,13 +84,13 @@ class HabitsListViewModel(private val repository: HabitsDatabaseRepository) : Vi
         return filterHabits.value ?: ""
     }
 
-    companion object {
-        class Factory(private val repository: HabitsDatabaseRepository) :
-            ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return modelClass.getConstructor(HabitsDatabaseRepository::class.java)
-                    .newInstance(repository)
-            }
-        }
-    }
+//    companion object {
+//        class HabitsListViewModelFactory(private val repository: HabitsDatabaseRepository) :
+//            ViewModelProvider.Factory {
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                return modelClass.getConstructor(HabitsDatabaseRepository::class.java)
+//                    .newInstance(repository)
+//            }
+//        }
+//    }
 }

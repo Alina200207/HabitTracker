@@ -1,0 +1,11 @@
+<resources>
+    <string name="good_habit">Хорошая</string>
+    <string name="bad_habit">Плохая</string>
+    <string name="red_color_text">Красный</string>
+    <string name="green_color_text">Зеленый</string>
+    <string name="low_priority">Низкий</string>
+    <string name="medium_priority">Средний</string>
+    <string name="high_priority">Высокий</string>
+    <string name="good_enum">Good</string>
+    <string name="bad_enum">Bad</string>
+</resources>

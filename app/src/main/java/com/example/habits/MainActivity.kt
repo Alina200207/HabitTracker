@@ -15,7 +15,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
-import com.example.habits.constants.Constants
+import com.example.domain.constants.Constants
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {

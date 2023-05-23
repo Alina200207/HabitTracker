@@ -6,30 +6,39 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import com.example.habits.HabitsApplication
+import com.example.habits.MainActivity
 import com.example.habits.databinding.FragmentBottomSheetBinding
+import com.example.habits.di.HabitsListViewModelComponent
+import com.example.habits.di.HabitsListViewModelComponentProvider
+import com.example.habits.di.HabitsListViewModelModule
 import com.example.habits.viewmodels.HabitsListViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import javax.inject.Inject
 
 
 class BottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetBinding
     private lateinit var application: HabitsApplication
-    private val habitsViewModel: HabitsListViewModel by activityViewModels {
-        HabitsListViewModel.Companion.Factory(
-            application.repository
-        )
+//    private val habitsViewModel: HabitsListViewModel by activityViewModels {
+//        HabitsListViewModel.Companion.HabitsListViewModelFactory(
+//            application.repository
+//        )
+//    }
+
+    @Inject
+    lateinit var habitsViewModel: HabitsListViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        application = activity?.application as HabitsApplication
+        getHabitsViewModelComponent().inject(this)
+        super.onCreate(savedInstanceState)
     }
-
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        application = activity?.application as HabitsApplication
         binding = FragmentBottomSheetBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -68,4 +77,10 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         super.onResume()
         binding.editFilterTitle.setText(habitsViewModel.getFilterText())
     }
+
+    fun getHabitsViewModelComponent():
+            HabitsListViewModelComponent =
+        (application as HabitsListViewModelComponentProvider).provideHabitsListViewModelComponent().create(
+            HabitsListViewModelModule(this.activity as MainActivity)
+        )
 }

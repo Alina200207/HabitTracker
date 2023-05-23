@@ -11,15 +11,17 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.habits.*
-import com.example.habits.constants.Constants
+import com.example.domain.constants.Constants
 import com.example.habits.databinding.FragmentHabitAddendumBinding
-import com.example.habits.entities.HabitColors
-import com.example.habits.entities.HabitInformation
-import com.example.habits.entities.HabitPriority
-import com.example.habits.entities.HabitType
+import com.example.domain.entities.HabitColors
+import com.example.domain.entities.HabitInformation
+import com.example.domain.entities.HabitPriority
+import com.example.domain.entities.HabitType
+import com.example.habits.di.AddendumViewModelFactory
+import com.example.habits.di.provideFactory
 import com.example.habits.viewmodels.HabitAddendumViewModel
+import javax.inject.Inject
 import kotlin.properties.Delegates
-
 
 class HabitAddendumFragment : Fragment() {
 
@@ -47,12 +49,20 @@ class HabitAddendumFragment : Fragment() {
     private lateinit var application: HabitsApplication
 
 
+
+    @Inject
+    lateinit var addendumViewModelFactory: AddendumViewModelFactory
+
     private val habitAddendumViewModel: HabitAddendumViewModel by viewModels {
-        HabitAddendumViewModel.Companion.Factory(
-            habitId, application.repository, application.serverRepository, application.appScope
-        )
+        provideFactory(addendumViewModelFactory, habitId)
     }
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        application = activity?.application as HabitsApplication
+        application.appComponent.inject(this)
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +70,6 @@ class HabitAddendumFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHabitAddendumBinding.inflate(inflater, container, false)
-        application = activity?.application as HabitsApplication
         val mainActivity = activity as MainActivity
         mainActivity.changeDrawerBehavior()
         mainActivity.supportActionBar?.title = resources.getString(R.string.add_habit)

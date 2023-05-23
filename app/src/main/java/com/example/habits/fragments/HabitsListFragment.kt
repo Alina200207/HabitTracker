@@ -11,8 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.habits.*
 import com.example.habits.adapters.HabitCardsAdapter
 import com.example.habits.databinding.FragmentHabitsListBinding
-import com.example.habits.entities.HabitType
+import com.example.domain.entities.HabitType
+import com.example.habits.di.HabitsListViewModelComponent
+import com.example.habits.di.HabitsListViewModelComponentProvider
+import com.example.habits.di.HabitsListViewModelModule
 import com.example.habits.viewmodels.HabitsListViewModel
+import javax.inject.Inject
 
 
 class HabitsListFragment : Fragment() {
@@ -20,11 +24,13 @@ class HabitsListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var listHabitType = HabitType.Good
     private lateinit var application: HabitsApplication
-    private val habitsViewModel: HabitsListViewModel by activityViewModels {
-        HabitsListViewModel.Companion.Factory(
-            application.repository
-        )
-    }
+//    private val habitsViewModel: HabitsListViewModel by activityViewModels {
+//        HabitsListViewModel.Companion.HabitsListViewModelFactory(
+//            application.repository
+//        )
+//    }
+    @Inject
+    lateinit var habitsViewModel: HabitsListViewModel
     private lateinit var adapter: HabitCardsAdapter
     private lateinit var binding: FragmentHabitsListBinding
     private val listener = HabitCardsAdapter.OnClickListener { id ->
@@ -39,6 +45,8 @@ class HabitsListFragment : Fragment() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        application = activity?.application as HabitsApplication
+        getHabitsViewModelComponent().inject(this)
         super.onCreate(savedInstanceState)
         arguments?.let {
             listHabitType = HabitType.valueOf(
@@ -53,7 +61,6 @@ class HabitsListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHabitsListBinding.inflate(inflater, container, false)
-        application = activity?.application as HabitsApplication
         val mainActivity = activity as MainActivity
         mainActivity.supportActionBar?.title = resources.getString(R.string.menu_home)
         return binding.root
@@ -78,6 +85,13 @@ class HabitsListFragment : Fragment() {
         super.onSaveInstanceState(outState)
         outState.putString(typeKey, listHabitType.toString())
     }
+
+    fun getHabitsViewModelComponent():
+        HabitsListViewModelComponent =
+            (application as HabitsListViewModelComponentProvider).provideHabitsListViewModelComponent().create(
+                HabitsListViewModelModule(this.activity as MainActivity)
+            )
+
 
     companion object {
         @JvmStatic
