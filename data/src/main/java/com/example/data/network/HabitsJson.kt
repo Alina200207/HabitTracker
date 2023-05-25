@@ -1,28 +1,27 @@
-package com.example.data.database.network
+package com.example.data.network
 
+import android.util.Log
 import com.example.domain.constants.Constants
 import com.example.domain.entities.HabitInformation
 import com.example.domain.entities.HabitPriority
 import com.example.domain.entities.HabitType
 import com.example.domain.entities.ServerSynchronization
 import com.google.gson.*
-import org.json.JSONArray
 import java.lang.reflect.Type
-import java.sql.Timestamp
-import java.util.Date
 import java.util.UUID
 
-class HabitsJsonSerializer: JsonSerializer<HabitInformation> {
+class HabitsJsonSerializer : JsonSerializer<HabitInformation> {
     override fun serialize(
         src: HabitInformation?,
         typeOfSrc: Type?,
         context: JsonSerializationContext?
     ): JsonElement {
         val result = JsonObject()
-        val dates = Gson().toJsonTree(listOf(0))
+        val dates = Gson().toJsonTree(src?.doneDates)
+        Log.i("okdgd", src?.doneDates.toString())
         result.addProperty("color", src?.habitColor)
         result.addProperty("count", src?.habitNumberExecution)
-        result.addProperty("date", (System.currentTimeMillis()/1000).toInt())
+        result.addProperty("date", (System.currentTimeMillis() / 1000).toInt())
         result.addProperty("description", src?.habitDescription)
         result.add("done_dates", dates)
         result.addProperty("frequency", src?.frequency)
@@ -35,7 +34,7 @@ class HabitsJsonSerializer: JsonSerializer<HabitInformation> {
     }
 }
 
-class HabitsJsonDeserializer: JsonDeserializer<HabitInformation> {
+class HabitsJsonDeserializer : JsonDeserializer<HabitInformation> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
@@ -43,7 +42,8 @@ class HabitsJsonDeserializer: JsonDeserializer<HabitInformation> {
     ): HabitInformation {
         val jsonObject = json?.asJsonObject
         val color = jsonObject?.get("color")?.asInt ?: Constants.green
-        return HabitInformation(0,
+        return HabitInformation(
+            0,
             jsonObject?.get("title")?.asString ?: "",
             jsonObject?.get("description")?.asString ?: "",
             HabitPriority.values()[jsonObject?.get("priority")?.asInt ?: 0],
@@ -53,7 +53,8 @@ class HabitsJsonDeserializer: JsonDeserializer<HabitInformation> {
             color,
             Constants.colors[color] ?: Constants.strGreen,
             ServerSynchronization.SynchronizedChange,
-            jsonObject?.get("uid")?.asString ?: UUID.randomUUID().toString()
+            jsonObject?.get("uid")?.asString ?: UUID.randomUUID().toString(),
+            Gson().fromJson(jsonObject?.get("done_dates"), Array<Int>::class.java).toList()
         )
     }
 }

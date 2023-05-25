@@ -1,11 +1,10 @@
-package com.example.data.database.database
+package com.example.data.database
 
 import com.example.domain.entities.HabitInformation
 import com.example.domain.entities.HabitType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

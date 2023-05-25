@@ -1,4 +1,4 @@
-package com.example.data.database.database
+package com.example.data.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -20,30 +20,7 @@ data class HabitInformationEntity(
     val habitColor: Int,
     val stringHabitColor: String,
     var isSynced: ServerSynchronization = ServerSynchronization.NotSynchronizedChange,
-    var uid: String
-) {
-    constructor(
-        habitTitle: String,
-        habitDescription: String,
-        habitPriority: HabitPriority,
-        habitType: HabitType,
-        habitNumberExecution: Int,
-        frequency: Int,
-        habitColor: Int,
-        stringHabitColor: String
-    ) : this(
-        0,
-        habitTitle,
-        habitDescription,
-        habitPriority,
-        habitType,
-        habitNumberExecution,
-        frequency,
-        habitColor,
-        stringHabitColor,
-        ServerSynchronization.NotSynchronizedChange,
-        "0"
-    )
-
-}
+    var uid: String,
+    var doneDates: List<Int>
+)
 

@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.data.database.HabitsDatabaseRepository
+import com.example.data.network.HabitsServerRepository
 import com.example.habits.*
 import com.example.habits.adapters.HabitCardsAdapter
 import com.example.habits.databinding.FragmentHabitsListBinding
@@ -16,6 +18,7 @@ import com.example.habits.di.HabitsListViewModelComponent
 import com.example.habits.di.HabitsListViewModelComponentProvider
 import com.example.habits.di.HabitsListViewModelModule
 import com.example.habits.viewmodels.HabitsListViewModel
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
 
@@ -24,13 +27,15 @@ class HabitsListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var listHabitType = HabitType.Good
     private lateinit var application: HabitsApplication
-//    private val habitsViewModel: HabitsListViewModel by activityViewModels {
-//        HabitsListViewModel.Companion.HabitsListViewModelFactory(
-//            application.repository
-//        )
-//    }
+
     @Inject
     lateinit var habitsViewModel: HabitsListViewModel
+
+    @Inject
+    lateinit var coroutineScope: CoroutineScope
+
+    @Inject
+    lateinit var repository: HabitsServerRepository
     private lateinit var adapter: HabitCardsAdapter
     private lateinit var binding: FragmentHabitsListBinding
     private val listener = HabitCardsAdapter.OnClickListener { id ->
@@ -71,11 +76,11 @@ class HabitsListFragment : Fragment() {
         recyclerView = binding.recyclerView
         when (listHabitType) {
             HabitType.Good -> habitsViewModel.resultGoodHabits.observe(viewLifecycleOwner) { list ->
-                adapter = HabitCardsAdapter(list, this, listener)
+                adapter = HabitCardsAdapter(list, this, listener, coroutineScope, repository)
                 recyclerView.adapter = adapter
             }
             HabitType.Bad -> habitsViewModel.resultBadHabits.observe(viewLifecycleOwner) { list ->
-                adapter = HabitCardsAdapter(list, this, listener)
+                adapter = HabitCardsAdapter(list, this, listener, coroutineScope, repository)
                 recyclerView.adapter = adapter
             }
         }
@@ -86,9 +91,10 @@ class HabitsListFragment : Fragment() {
         outState.putString(typeKey, listHabitType.toString())
     }
 
-    fun getHabitsViewModelComponent():
-        HabitsListViewModelComponent =
-            (application as HabitsListViewModelComponentProvider).provideHabitsListViewModelComponent().create(
+    private fun getHabitsViewModelComponent():
+            HabitsListViewModelComponent =
+        (application as HabitsListViewModelComponentProvider).provideHabitsListViewModelComponent()
+            .create(
                 HabitsListViewModelModule(this.activity as MainActivity)
             )
 

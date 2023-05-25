@@ -1,6 +1,6 @@
-package com.example.data.database.network
+package com.example.data.network
 
-import com.example.data.database.database.HabitsDatabaseRepository
+import com.example.data.database.HabitsDatabaseRepository
 import com.example.domain.entities.HabitInformation
 import com.example.domain.entities.ServerSynchronization
 import com.example.domain.entities.Uid
@@ -19,17 +19,17 @@ class HabitsServerRepository @Inject constructor(
                 habitsDatabaseRepository.getAllHabits()
                     .filter { habit -> habit.isSynced == ServerSynchronization.NotSynchronizedChange }
             val notSyncedDeletedHabits = habitsDatabaseRepository.getAllHabits()
-                .filter { habit -> ((habit.isSynced == ServerSynchronization.NotSynchronizedDeletion) and (habit.uid != "0"))}
+                .filter { habit -> ((habit.isSynced == ServerSynchronization.NotSynchronizedDeletion) and (habit.uid != "0")) }
             val notSyncedDeletedHabitsInDatabase = habitsDatabaseRepository.getAllHabits()
-                .filter { habit -> ((habit.isSynced == ServerSynchronization.NotSynchronizedDeletion) and (habit.uid == "0"))}
+                .filter { habit -> ((habit.isSynced == ServerSynchronization.NotSynchronizedDeletion) and (habit.uid == "0")) }
             if (notSyncedDeletedHabitsInDatabase.isNotEmpty()) {
-                for (habit in notSyncedDeletedHabitsInDatabase){
+                for (habit in notSyncedDeletedHabitsInDatabase) {
                     habitsDatabaseRepository.delete(habit)
                 }
             }
             var lastPutResponse: Response<Uid>? = null
             if (notSyncedChangedHabits.isNotEmpty()) {
-                for (i in notSyncedChangedHabits.indices){
+                for (i in notSyncedChangedHabits.indices) {
                     if (i == notSyncedDeletedHabits.size - 1)
                         lastPutResponse = habitsApiService.putHabit(notSyncedChangedHabits[i])
                     else
@@ -40,10 +40,11 @@ class HabitsServerRepository @Inject constructor(
                 }
             }
             var lastDeleteResponse: Response<Unit>? = null
-            if (notSyncedDeletedHabits.isNotEmpty()){
-                for (i in notSyncedDeletedHabits.indices){
+            if (notSyncedDeletedHabits.isNotEmpty()) {
+                for (i in notSyncedDeletedHabits.indices) {
                     if (i == notSyncedDeletedHabits.size - 1)
-                        lastDeleteResponse = habitsApiService.deleteHabit(Uid(notSyncedDeletedHabits[i].uid))
+                        lastDeleteResponse =
+                            habitsApiService.deleteHabit(Uid(notSyncedDeletedHabits[i].uid))
                     else
                         habitsApiService.deleteHabit(Uid(notSyncedDeletedHabits[i].uid))
                 }
@@ -51,8 +52,8 @@ class HabitsServerRepository @Inject constructor(
             if ((lastDeleteResponse?.isSuccessful == true and (lastPutResponse?.isSuccessful == true)) or
                 (lastDeleteResponse?.isSuccessful == true and notSyncedChangedHabits.isEmpty()) or
                 (lastPutResponse?.isSuccessful == true and notSyncedDeletedHabits.isEmpty()) or
-                (notSyncedDeletedHabits.isEmpty() and notSyncedChangedHabits.isEmpty()))
-            {
+                (notSyncedDeletedHabits.isEmpty() and notSyncedChangedHabits.isEmpty())
+            ) {
                 val response = habitsApiService.getHabits()
                 if (response.isSuccessful) {
                     habitsDatabaseRepository.deleteAll()
@@ -62,7 +63,7 @@ class HabitsServerRepository @Inject constructor(
         }
     }
 
-    suspend fun updateHabit(habit: HabitInformation){
+    suspend fun updateHabit(habit: HabitInformation) {
         withContext(Dispatchers.IO) {
             habitsDatabaseRepository.update(habit)
             val response = habitsApiService.putHabit(habit)
@@ -98,20 +99,30 @@ class HabitsServerRepository @Inject constructor(
         withContext(Dispatchers.IO) {
             habitsDatabaseRepository.update(habit)
             var notSyncedHabitAfterUpdating: HabitInformation? = null
-            if (!delete(habit).isSuccessful)
-            {
+            if (!delete(habit).isSuccessful) {
                 notSyncedHabitAfterUpdating = habitsDatabaseRepository.getHabit(habit.id)
             }
             notSyncedHabitAfterUpdating?.let { delete(it) }
         }
     }
 
-    private suspend fun delete(habit: HabitInformation): Response<Unit>{
+    suspend fun postHabitDone(habit: HabitInformation) {
+        withContext(Dispatchers.IO) {
+            habitsDatabaseRepository.update(habit)
+            habitsApiService.postHabit(
+                HabitDone(
+                    habit.doneDates[habit.doneDates.size - 1],
+                    habit.uid
+                )
+            )
+        }
+    }
+
+    private suspend fun delete(habit: HabitInformation): Response<Unit> {
         val response = habitsApiService.deleteHabit(Uid(habit.uid))
         if (response.isSuccessful) {
             habitsDatabaseRepository.delete(habit)
         }
         return response
     }
-
 }

@@ -77,6 +77,28 @@
                         app:layout_constraintStart_toStartOf="@id/habit_frequency"
                         app:layout_constraintTop_toBottomOf="@id/habit_frequency" />
 
+                    <ImageButton
+                        android:id="@+id/habit_done"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/habit_done"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/habit_done_icon"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="DuplicateSpeakableTextCheck" />
+
+                    <TextView
+                        android:id="@+id/count_done"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/done_count"
+                        android:textColor="@color/black"
+                        app:layout_constraintStart_toStartOf="@id/habit_done"
+                        app:layout_constraintTop_toBottomOf="@id/habit_done" />
+
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 

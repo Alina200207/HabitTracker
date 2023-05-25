@@ -1,4 +1,4 @@
-package com.example.data.database.database
+package com.example.data.database
 
 import com.example.domain.entities.HabitInformation
 
@@ -15,7 +15,8 @@ object ConvertEntities {
             habit.habitColor,
             habit.stringHabitColor,
             habit.isSynced,
-            habit.uid
+            habit.uid,
+            habit.doneDates
         )
     }
 
@@ -31,7 +32,8 @@ object ConvertEntities {
             habit.habitColor,
             habit.stringHabitColor,
             habit.isSynced,
-            habit.uid
+            habit.uid,
+            habit.doneDates
         )
     }
 }

@@ -1,9 +1,9 @@
-package com.example.data.database.di
+package com.example.data.di
 
 import android.content.Context
-import com.example.data.database.database.HabitsDatabase
-import com.example.data.database.database.HabitsDatabaseRepository
-import com.example.data.database.network.*
+import com.example.data.database.HabitsDatabase
+import com.example.data.database.HabitsDatabaseRepository
+import com.example.data.network.*
 import com.example.domain.constants.Constants
 import com.example.domain.entities.HabitInformation
 import com.google.gson.GsonBuilder
@@ -21,31 +21,36 @@ class DataModule(private val context: Context) {
 
     @Singleton
     @Provides
-    fun provideServerRepository(habitsApiService: HabitsApiService,
-                                habitsDatabaseRepository: HabitsDatabaseRepository) : HabitsServerRepository{
+    fun provideServerRepository(
+        habitsApiService: HabitsApiService,
+        habitsDatabaseRepository: HabitsDatabaseRepository
+    ): HabitsServerRepository {
         return HabitsServerRepository(habitsApiService, habitsDatabaseRepository)
     }
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit) =
+    fun provideApiService(retrofit: Retrofit): HabitsApiService =
         retrofit.create(HabitsApiService::class.java)
 
     @Singleton
     @Provides
-    fun provideDatabaseRepository(habitsDatabase: HabitsDatabase): HabitsDatabaseRepository{
+    fun provideDatabaseRepository(habitsDatabase: HabitsDatabase): HabitsDatabaseRepository {
         return HabitsDatabaseRepository(habitsDatabase.habitsDao())
     }
 
     @Singleton
     @Provides
-    fun provideDatabase(): HabitsDatabase{
+    fun provideDatabase(): HabitsDatabase {
         return HabitsDatabase.getDatabase(context)
     }
 
     @Singleton
     @Provides
-    fun provideRetrofit(okHttpClient: OkHttpClient, gsonConverterFactory: GsonConverterFactory): Retrofit {
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(Constants.baseUrl)
             .client(okHttpClient)
@@ -56,7 +61,7 @@ class DataModule(private val context: Context) {
 
     @Singleton
     @Provides
-    fun provideHttpClient(): OkHttpClient{
+    fun provideHttpClient(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor()
         loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return OkHttpClient.Builder()
@@ -67,7 +72,7 @@ class DataModule(private val context: Context) {
 
     @Singleton
     @Provides
-    fun gsonConverterFactory(): GsonConverterFactory{
+    fun gsonConverterFactory(): GsonConverterFactory {
         val gsonBuilder = GsonBuilder()
         gsonBuilder
             .registerTypeAdapter(HabitInformation::class.java, HabitsJsonSerializer())

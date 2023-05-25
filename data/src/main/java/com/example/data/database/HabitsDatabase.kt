@@ -1,12 +1,12 @@
-package com.example.data.database.database
+package com.example.data.database
 
 import android.content.Context
 import androidx.room.*
 import com.example.domain.constants.Constants
-import com.example.domain.entities.HabitInformation
 
 @Database(entities = [HabitInformationEntity::class], version = 1, exportSchema = false)
-abstract class HabitsDatabase: RoomDatabase() {
+@TypeConverters(ListConverter::class)
+abstract class HabitsDatabase : RoomDatabase() {
     abstract fun habitsDao(): HabitsDao
 
     companion object {

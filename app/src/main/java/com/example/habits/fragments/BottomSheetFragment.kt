@@ -78,9 +78,10 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         binding.editFilterTitle.setText(habitsViewModel.getFilterText())
     }
 
-    fun getHabitsViewModelComponent():
+    private fun getHabitsViewModelComponent():
             HabitsListViewModelComponent =
-        (application as HabitsListViewModelComponentProvider).provideHabitsListViewModelComponent().create(
-            HabitsListViewModelModule(this.activity as MainActivity)
-        )
+        (application as HabitsListViewModelComponentProvider).provideHabitsListViewModelComponent()
+            .create(
+                HabitsListViewModelModule(this.activity as MainActivity)
+            )
 }

@@ -1,4 +1,4 @@
-package com.example.data.database.network
+package com.example.data.network
 
 import android.util.Log
 import com.example.domain.constants.Constants
@@ -10,7 +10,8 @@ class RetryInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val requestWithAuthorization =
-            request.newBuilder().header(Constants.headerAuthorization, Constants.authorization).build()
+            request.newBuilder().header(Constants.headerAuthorization, Constants.authorization)
+                .build()
         return try {
             chain.proceed(requestWithAuthorization)
         } catch (e: Throwable) {
@@ -23,7 +24,8 @@ class RetryInterceptor : Interceptor {
     private fun repeatRequest(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val requestWithAuthorization =
-            request.newBuilder().header(Constants.headerAuthorization, Constants.authorization).build()
+            request.newBuilder().header(Constants.headerAuthorization, Constants.authorization)
+                .build()
         return try {
             chain.proceed(requestWithAuthorization)
         } catch (e: Throwable) {

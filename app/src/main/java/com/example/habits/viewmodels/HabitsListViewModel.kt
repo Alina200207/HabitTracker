@@ -1,23 +1,25 @@
 package com.example.habits.viewmodels
 
 import androidx.lifecycle.*
-import com.example.data.database.database.HabitsDatabaseRepository
+import com.example.data.database.HabitsDatabaseRepository
 import com.example.domain.entities.*
 import javax.inject.Inject
 
-class HabitsListViewModel @Inject constructor(private val repository: HabitsDatabaseRepository) : ViewModel() {
-    private var goodHabits = repository.goodHabits.asLiveData()
-    private var badHabits = repository.badHabits.asLiveData()
+class HabitsListViewModel @Inject constructor(private val databaseRepository: HabitsDatabaseRepository) :
+    ViewModel() {
+    private var goodHabits = databaseRepository.goodHabits.asLiveData()
+    private var badHabits = databaseRepository.badHabits.asLiveData()
 
     private var sortHabits = MutableLiveData<SortData>()
     private var filterHabits = MutableLiveData("")
 
-    private fun updateValue(listType: HabitType): List<HabitInformation>{
+    private fun updateValue(listType: HabitType): List<HabitInformation> {
         var noValue = false
-        val habitsList = when(listType){
+        val habitsList = when (listType) {
             HabitType.Bad -> badHabits
             HabitType.Good -> goodHabits
-        }.value?.filter { habit -> habit.isSynced != ServerSynchronization.NotSynchronizedDeletion } ?: arrayListOf()
+        }.value?.filter { habit -> habit.isSynced != ServerSynchronization.NotSynchronizedDeletion }
+            ?: arrayListOf()
         val filter = filterHabits.value ?: ""
         val sort = sortHabits.value ?: {
             noValue = true
@@ -80,7 +82,7 @@ class HabitsListViewModel @Inject constructor(private val repository: HabitsData
     }
 
 
-    fun getFilterText(): String{
+    fun getFilterText(): String {
         return filterHabits.value ?: ""
     }
 

@@ -1,9 +1,9 @@
 package com.example.habits.di
 
-import com.example.data.database.di.DataModule
+import com.example.data.di.DataModule
 import com.example.habits.HabitsApplication
+import com.example.habits.adapters.HabitCardsAdapter
 import com.example.habits.fragments.HabitAddendumFragment
-import com.example.habits.viewmodels.HabitsListViewModel
 import dagger.Component
 import javax.inject.Singleton
 
@@ -21,6 +21,7 @@ interface ApplicationComponent {
         ):
                 ApplicationComponent
     }
+
     fun inject(app: HabitsApplication)
     fun inject(addendumFragment: HabitAddendumFragment)
     fun habitsListViewModelComponentFactory(): HabitsListViewModelComponent.Factory

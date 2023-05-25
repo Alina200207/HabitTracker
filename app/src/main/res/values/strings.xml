@@ -8,6 +8,11 @@
     <string name="habit_priority">Приоритет: %s</string>
     <string name="habit_type">Тип: %s</string>
     <string name="habit_frequency">Периодичность: %d %s в %d %s</string>
+    <string name="bad_habits_can_do">Можете выполнить еще %d %s.</string>
+    <string name="bad_habits_can_not_do">Хватит это делать.</string>
+    <string name="good_habits_can_do">Стоит выполнить еще %d %s.</string>
+    <string name="good_habits_can_not_do">You are breathtaking!</string>
+    <string name="days_period_end">До конца отчетного периода осталось %d %s</string>
     <string name="adding_habit">adding_habit</string>
     <string name="habit_name">Название привычки</string>
     <string name="description">Описание</string>
@@ -44,6 +49,8 @@
     <string name="sort_priority">Сортировка приоритетности:</string>
     <string name="delete">Удалить</string>
     <string name="image">image</string>
+    <string name="habit_done">Пометить выполненной</string>
+    <string name="done_count">%d / %d</string>
     <string-array name="priorities">
         <item>Высокий</item>
         <item>Средний</item>

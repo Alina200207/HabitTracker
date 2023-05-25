@@ -1,13 +1,12 @@
-package com.example.data.database.network
+package com.example.data.network
 
-import com.example.domain.entities.HabitDone
 import com.example.domain.entities.HabitInformation
 import com.example.domain.entities.Uid
 import retrofit2.Response
 import retrofit2.http.*
 
 
-interface HabitsApiService{
+interface HabitsApiService {
     @GET("habit")
     suspend fun getHabits(): Response<Array<HabitInformation>>
 
@@ -15,7 +14,7 @@ interface HabitsApiService{
     suspend fun putHabit(@Body habit: HabitInformation): Response<Uid>
 
     @POST("habit_done")
-    suspend fun postHabit(@Body habitDone: HabitDone): Response<Uid>
+    suspend fun postHabit(@Body habitDone: HabitDone): Response<Unit>
 
     @HTTP(method = "DELETE", path = "habit", hasBody = true)
     suspend fun deleteHabit(@Body uid: Uid): Response<Unit>
