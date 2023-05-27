@@ -1,8 +1,6 @@
 package com.example.habits
 
 import android.app.Application
-import com.example.data.database.HabitsDatabase
-import com.example.data.database.HabitsDatabaseRepository
 import com.example.data.di.DataModule
 import com.example.data.network.HabitsServerRepository
 import com.example.habits.di.*
@@ -23,7 +21,7 @@ class HabitsApplication : Application(), HabitsListViewModelComponentProvider {
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerApplicationComponent.factory()
-            .create(DataModule(this), ContextModule(this), CoroutineScopeModule(appScope))
+            .create(DataModule(), ContextModule(this), CoroutineScopeModule(appScope))
         appComponent.inject(this)
         appScope.launch {
             serverRepository.updateHabitsList()

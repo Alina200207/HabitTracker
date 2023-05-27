@@ -13,7 +13,7 @@ object Constants {
     const val baseUrl = "https://droid-test-server.doubletapp.ru/api/"
     const val imageUrl =
         "https://fikiwiki.com/uploads/posts/2022-02/thumbs/1645054738_13-fikiwiki-com-p-kartinki-ikonki-13.png"
-    const val authorization = ""
+    const val authorization = "63c29b9b-f746-4a4e-aa20-ee4942123e4b"
     private val red = Color.rgb(255, 0, 0)
     val green = Color.rgb(0, 255, 0)
     private const val strRed = "Красный"

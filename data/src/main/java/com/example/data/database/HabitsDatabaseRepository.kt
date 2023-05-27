@@ -2,6 +2,7 @@ package com.example.data.database
 
 import com.example.domain.entities.HabitInformation
 import com.example.domain.entities.HabitType
+import com.example.domain.interfaces.DatabaseRepositoryInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class HabitsDatabaseRepository @Inject constructor(private val habitsDao: HabitsDao) {
+class HabitsDatabaseRepository @Inject constructor(private val habitsDao: HabitsDao): DatabaseRepositoryInterface {
 
     val goodHabits = habitsDao.getHabitsByType(HabitType.Good).map { habits ->
         habits.map { habit -> ConvertEntities.fromHabitInformationEntityToHabitInformation(habit) }
@@ -18,7 +19,7 @@ class HabitsDatabaseRepository @Inject constructor(private val habitsDao: Habits
         habits.map { habit -> ConvertEntities.fromHabitInformationEntityToHabitInformation(habit) }
     }
 
-    suspend fun insertAll(vararg habits: HabitInformation) {
+    override suspend fun insertAll(vararg habits: HabitInformation) {
         return withContext(Dispatchers.IO) {
             for (habit in habits) {
                 habitsDao.insert(ConvertEntities.fromHabitInformationToHabitInformationEntity(habit))
@@ -26,13 +27,13 @@ class HabitsDatabaseRepository @Inject constructor(private val habitsDao: Habits
         }
     }
 
-    suspend fun insert(habit: HabitInformation): Long {
+    override suspend fun insert(habit: HabitInformation): Long {
         return withContext(Dispatchers.IO) {
             habitsDao.insert(ConvertEntities.fromHabitInformationToHabitInformationEntity(habit))
         }
     }
 
-    suspend fun update(habit: HabitInformation) {
+    override suspend fun update(habit: HabitInformation) {
         withContext(Dispatchers.IO) {
             habitsDao.updateHabits(
                 ConvertEntities.fromHabitInformationToHabitInformationEntity(
@@ -49,19 +50,19 @@ class HabitsDatabaseRepository @Inject constructor(private val habitsDao: Habits
         }
     }
 
-    suspend fun deleteAll() {
+    override suspend fun deleteAll() {
         return withContext(Dispatchers.IO) {
             habitsDao.deleteAll()
         }
     }
 
-    suspend fun delete(habit: HabitInformation) {
+    override suspend fun delete(habit: HabitInformation) {
         withContext(Dispatchers.IO) {
             habitsDao.delete(ConvertEntities.fromHabitInformationToHabitInformationEntity(habit))
         }
     }
 
-    suspend fun getHabitById(id: Long): Flow<HabitInformation> {
+    override suspend fun getHabitById(id: Long): Flow<HabitInformation> {
         return withContext(Dispatchers.IO) {
             flowOf(
                 ConvertEntities.fromHabitInformationEntityToHabitInformation(

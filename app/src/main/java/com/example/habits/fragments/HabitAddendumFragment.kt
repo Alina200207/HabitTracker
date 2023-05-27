@@ -226,7 +226,6 @@ class HabitAddendumFragment : Fragment() {
     private fun changeHabit() {
         habitAddendumViewModel.changeHabit(
         )
-
     }
 
     override fun onStop() {

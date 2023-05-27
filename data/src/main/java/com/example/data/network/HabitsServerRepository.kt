@@ -4,6 +4,7 @@ import com.example.data.database.HabitsDatabaseRepository
 import com.example.domain.entities.HabitInformation
 import com.example.domain.entities.ServerSynchronization
 import com.example.domain.entities.Uid
+import com.example.domain.interfaces.ServerRepositoryInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
@@ -12,8 +13,8 @@ import javax.inject.Inject
 class HabitsServerRepository @Inject constructor(
     private val habitsApiService: HabitsApiService,
     private val habitsDatabaseRepository: HabitsDatabaseRepository
-) {
-    suspend fun updateHabitsList() {
+): ServerRepositoryInterface {
+    override suspend fun synchronizeDatabaseAndServer() {
         withContext(Dispatchers.IO) {
             val notSyncedChangedHabits =
                 habitsDatabaseRepository.getAllHabits()
@@ -63,7 +64,7 @@ class HabitsServerRepository @Inject constructor(
         }
     }
 
-    suspend fun updateHabit(habit: HabitInformation) {
+    override suspend fun updateHabit(habit: HabitInformation) {
         withContext(Dispatchers.IO) {
             habitsDatabaseRepository.update(habit)
             val response = habitsApiService.putHabit(habit)
@@ -78,7 +79,7 @@ class HabitsServerRepository @Inject constructor(
         }
     }
 
-    suspend fun insertHabit(habit: HabitInformation) {
+    override suspend fun insertHabit(habit: HabitInformation) {
         withContext(Dispatchers.IO) {
             val id = habitsDatabaseRepository.insert(habit)
             val response = habitsApiService.putHabit(habit)
@@ -95,7 +96,7 @@ class HabitsServerRepository @Inject constructor(
     }
 
 
-    suspend fun deleteHabit(habit: HabitInformation) {
+    override suspend fun deleteHabit(habit: HabitInformation) {
         withContext(Dispatchers.IO) {
             habitsDatabaseRepository.update(habit)
             var notSyncedHabitAfterUpdating: HabitInformation? = null
@@ -106,7 +107,7 @@ class HabitsServerRepository @Inject constructor(
         }
     }
 
-    suspend fun postHabitDone(habit: HabitInformation) {
+    override suspend fun postHabitDone(habit: HabitInformation) {
         withContext(Dispatchers.IO) {
             habitsDatabaseRepository.update(habit)
             habitsApiService.postHabit(

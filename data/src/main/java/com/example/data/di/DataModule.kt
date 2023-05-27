@@ -17,7 +17,7 @@ import javax.inject.Singleton
 
 
 @Module
-class DataModule(private val context: Context) {
+class DataModule {
 
     @Singleton
     @Provides
@@ -41,7 +41,7 @@ class DataModule(private val context: Context) {
 
     @Singleton
     @Provides
-    fun provideDatabase(): HabitsDatabase {
+    fun provideDatabase(context: Context): HabitsDatabase {
         return HabitsDatabase.getDatabase(context)
     }
 
