@@ -4,7 +4,7 @@ import android.graphics.Color
 import androidx.lifecycle.*
 import com.example.data.database.HabitsDatabaseRepository
 import com.example.domain.entities.*
-import com.example.data.network.HabitsServerRepository
+import com.example.domain.usecases.HabitsStoragesUpdatingUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import dagger.assisted.Assisted
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.lastOrNull
 class HabitAddendumViewModel @AssistedInject constructor(
     @Assisted private val id: Long,
     private val databaseRepository: HabitsDatabaseRepository,
-    private val serverRepository: HabitsServerRepository,
+    private val habitsUseCase: HabitsStoragesUpdatingUseCase,
     private val appScope: CoroutineScope
 ) :
     ViewModel() {
@@ -80,29 +80,19 @@ class HabitAddendumViewModel @AssistedInject constructor(
         }
     }
 
-    fun addHabit() {
+    fun saveHabit() {
         request.value?.let {
             appScope.launch {
-                serverRepository.insertHabit(it)
+                habitsUseCase.saveHabit(it)
             }
         }
-    }
-
-    fun changeHabit() {
-        request.value?.let {
-            appScope.launch {
-                serverRepository.updateHabit(it)
-            }
-        }
-
     }
 
     fun deleteHabit() {
         if (habitId.value != -1L) {
             request.value?.let {
-                it.isSynced = ServerSynchronization.NotSynchronizedDeletion
                 appScope.launch {
-                    serverRepository.deleteHabit(it)
+                    habitsUseCase.deleteHabit(it)
                 }
             }
         }

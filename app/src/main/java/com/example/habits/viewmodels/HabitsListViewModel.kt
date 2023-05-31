@@ -3,9 +3,13 @@ package com.example.habits.viewmodels
 import androidx.lifecycle.*
 import com.example.data.database.HabitsDatabaseRepository
 import com.example.domain.entities.*
+import com.example.domain.usecases.HabitsSortAndFilterUseCase
 import javax.inject.Inject
 
-class HabitsListViewModel @Inject constructor(private val databaseRepository: HabitsDatabaseRepository) :
+class HabitsListViewModel @Inject constructor(
+    private val databaseRepository: HabitsDatabaseRepository,
+    private val habitsSortAndFilterUseCase: HabitsSortAndFilterUseCase
+) :
     ViewModel() {
     private var goodHabits = databaseRepository.goodHabits.asLiveData()
     private var badHabits = databaseRepository.badHabits.asLiveData()
@@ -14,39 +18,16 @@ class HabitsListViewModel @Inject constructor(private val databaseRepository: Ha
     private var filterHabits = MutableLiveData("")
 
     private fun updateValue(listType: HabitType): List<HabitInformation> {
-        var noValue = false
         val habitsList = when (listType) {
             HabitType.Bad -> badHabits
             HabitType.Good -> goodHabits
         }.value?.filter { habit -> habit.isSynced != ServerSynchronization.NotSynchronizedDeletion }
             ?: arrayListOf()
         val filter = filterHabits.value ?: ""
-        val sort = sortHabits.value ?: {
-            noValue = true
-        }
-        if (noValue) {
-            return habitsList.filter { elem -> elem.habitTitle.contains(filter) }
-        }
+        val sort = sortHabits.value
+            ?: return habitsList.filter { elem -> elem.habitTitle.contains(filter) }
 
-        return (when (sort) {
-            SortData(
-                SortType.Ascending,
-                SortField.Title
-            ) -> ArrayList(habitsList.sortedBy { it.habitTitle })
-            SortData(
-                SortType.Descending,
-                SortField.Title
-            ) -> ArrayList(habitsList.sortedByDescending { it.habitTitle })
-            SortData(
-                SortType.Ascending,
-                SortField.Priority
-            ) -> ArrayList(habitsList.sortedBy { it.habitPriority })
-            SortData(
-                SortType.Descending,
-                SortField.Priority
-            ) -> ArrayList(habitsList.sortedByDescending { it.habitPriority })
-            else -> ArrayList(habitsList.sortedBy { it.habitTitle })
-        }).filter { elem -> elem.habitTitle.contains(filter) }
+        return habitsSortAndFilterUseCase.sortAndFilterHabits(sort, filter, habitsList)
     }
 
     val resultGoodHabits = MediatorLiveData<List<HabitInformation>>().apply {
@@ -66,7 +47,6 @@ class HabitsListViewModel @Inject constructor(private val databaseRepository: Ha
 
     fun reverseSortByTitle() {
         sortHabits.value = SortData(SortType.Descending, SortField.Title)
-
     }
 
     fun sortByPriority() {
@@ -81,18 +61,7 @@ class HabitsListViewModel @Inject constructor(private val databaseRepository: Ha
         filterHabits.value = titlePart
     }
 
-
     fun getFilterText(): String {
         return filterHabits.value ?: ""
     }
-
-//    companion object {
-//        class HabitsListViewModelFactory(private val repository: HabitsDatabaseRepository) :
-//            ViewModelProvider.Factory {
-//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                return modelClass.getConstructor(HabitsDatabaseRepository::class.java)
-//                    .newInstance(repository)
-//            }
-//        }
-//    }
 }

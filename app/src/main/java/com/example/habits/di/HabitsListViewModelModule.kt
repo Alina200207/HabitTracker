@@ -3,6 +3,7 @@ package com.example.habits.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.data.database.HabitsDatabaseRepository
+import com.example.domain.usecases.HabitsSortAndFilterUseCase
 import com.example.habits.MainActivity
 import com.example.habits.viewmodels.HabitsListViewModel
 import dagger.Module
@@ -16,11 +17,11 @@ class HabitsListViewModelModule(private val activity: MainActivity) {
     fun provideActivity() = activity
 
     @Provides
-    fun provideFactory(repository: HabitsDatabaseRepository): ViewModelProvider.Factory {
+    fun provideFactory(repository: HabitsDatabaseRepository, habitsSortAndFilterUseCase: HabitsSortAndFilterUseCase): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return modelClass.getConstructor(HabitsDatabaseRepository::class.java)
-                    .newInstance(repository)
+                return modelClass.getConstructor(HabitsDatabaseRepository::class.java, HabitsSortAndFilterUseCase::class.java)
+                    .newInstance(repository, habitsSortAndFilterUseCase)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.habits.di
 
 import com.example.data.di.DataModule
+import com.example.domain.di.UseCaseModule
 import com.example.habits.HabitsApplication
 import com.example.habits.adapters.HabitCardsAdapter
 import com.example.habits.fragments.HabitAddendumFragment
@@ -9,7 +10,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-@Component(modules = [DataModule::class, ContextModule::class, CoroutineScopeModule::class, ViewModulesModule::class])
+@Component(modules = [DataModule::class, ContextModule::class, CoroutineScopeModule::class, ViewModulesModule::class, UseCaseModule::class])
 interface ApplicationComponent {
 
     @Component.Factory

@@ -49,7 +49,6 @@ class HabitAddendumFragment : Fragment() {
     private lateinit var application: HabitsApplication
 
 
-
     @Inject
     lateinit var addendumViewModelFactory: AddendumViewModelFactory
 
@@ -89,8 +88,8 @@ class HabitAddendumFragment : Fragment() {
         save = binding.save
         delete = binding.delete
         colorRadioGroup = binding.editColorRadioGroup
-        habitAddendumViewModel.request.observe(viewLifecycleOwner){
-            habit -> setHabitState(habit)
+        habitAddendumViewModel.request.observe(viewLifecycleOwner) { habit ->
+            setHabitState(habit)
         }
 //        для ColorPicker
 //        choseButton.setOnClickListener{
@@ -102,15 +101,15 @@ class HabitAddendumFragment : Fragment() {
         save.setOnClickListener {
             getInformationFromFields()
             setInformationToViewModel()
-            saveHabit(habitId, view)
+            saveHabit(view)
         }
-        delete.setOnClickListener{
+        delete.setOnClickListener {
             deleteHabit(view)
         }
     }
 
     private fun setHabitState(habit: HabitInformation) {
-        if (habitId != -1L) {
+        if (habitId != -1L){
             habitTitleEditText.setText(habit.habitTitle)
             habitDescriptionEditText.setText(habit.habitDescription)
             habitFrequencyCountEditText.setText(habit.habitNumberExecution.toString())
@@ -196,19 +195,16 @@ class HabitAddendumFragment : Fragment() {
                 && habitFrequencyCountText.isNotEmpty() && habitFrequencyPeriodText.isNotEmpty())
     }
 
-    private fun saveHabit(habitId: Long, view: View) {
+    private fun saveHabit(view: View) {
         if (checkFieldsFullness()) {
-            if (habitId == -1L)
-                addHabit()
-            else
-                changeHabit()
+            habitAddendumViewModel.saveHabit()
             view.findNavController().navigateUp()
         } else {
             showToastMessage()
         }
     }
 
-    private fun deleteHabit(view: View){
+    private fun deleteHabit(view: View) {
         habitAddendumViewModel.deleteHabit()
         view.findNavController().navigateUp()
     }
@@ -216,16 +212,6 @@ class HabitAddendumFragment : Fragment() {
     private fun showToastMessage() {
         Toast.makeText(this.requireContext(), Constants.toastAllFieldsText, Toast.LENGTH_LONG)
             .show()
-    }
-
-    private fun addHabit() {
-        habitAddendumViewModel.addHabit(
-        )
-    }
-
-    private fun changeHabit() {
-        habitAddendumViewModel.changeHabit(
-        )
     }
 
     override fun onStop() {

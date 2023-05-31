@@ -6,6 +6,7 @@ import com.example.data.database.HabitsDatabaseRepository
 import com.example.data.network.*
 import com.example.domain.constants.Constants
 import com.example.domain.entities.HabitInformation
+import com.example.domain.interfaces.ServerRepositoryInterface
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
@@ -24,7 +25,7 @@ class DataModule {
     fun provideServerRepository(
         habitsApiService: HabitsApiService,
         habitsDatabaseRepository: HabitsDatabaseRepository
-    ): HabitsServerRepository {
+    ): ServerRepositoryInterface {
         return HabitsServerRepository(habitsApiService, habitsDatabaseRepository)
     }
 

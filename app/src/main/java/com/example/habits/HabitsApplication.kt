@@ -24,7 +24,7 @@ class HabitsApplication : Application(), HabitsListViewModelComponentProvider {
             .create(DataModule(), ContextModule(this), CoroutineScopeModule(appScope))
         appComponent.inject(this)
         appScope.launch {
-            serverRepository.updateHabitsList()
+            serverRepository.synchronizeDatabaseAndServer()
         }
     }
 
