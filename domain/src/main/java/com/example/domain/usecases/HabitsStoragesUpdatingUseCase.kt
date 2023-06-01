@@ -18,5 +18,4 @@ class HabitsStoragesUpdatingUseCase @Inject constructor(private val serverReposi
         habit.isSynced = ServerSynchronization.NotSynchronizedDeletion
         serverRepository.deleteHabit(habit)
     }
-
 }

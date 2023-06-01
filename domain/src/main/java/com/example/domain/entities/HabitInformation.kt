@@ -45,8 +45,8 @@ data class HabitInformation(
     companion object {
         fun getHabitDoneInfo(habit: HabitInformation): Pair<Int, Int> {
             val doneDates = habit.doneDates
-            return if (doneDates.size == 1) {
-                Pair(habit.habitNumberExecution - 1, habit.frequency)
+            return if (doneDates.size == 1 || doneDates.isEmpty()) {
+                Pair(habit.habitNumberExecution - doneDates.size, habit.frequency)
             } else {
                 val daysFromStart =
                     floor((((System.currentTimeMillis() / 1000).toInt() - doneDates[0]) / (Constants.secondsInDay).toDouble())).toInt()
@@ -57,6 +57,7 @@ data class HabitInformation(
                 Pair(numberOfRemainingExecutions, daysRemained)
             }
         }
+
 
         fun getCountDone(habit: HabitInformation): Int {
             val doneDates = habit.doneDates

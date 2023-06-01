@@ -20,11 +20,7 @@ import javax.inject.Inject
 class BottomSheetFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentBottomSheetBinding
     private lateinit var application: HabitsApplication
-//    private val habitsViewModel: HabitsListViewModel by activityViewModels {
-//        HabitsListViewModel.Companion.HabitsListViewModelFactory(
-//            application.repository
-//        )
-//    }
+
 
     @Inject
     lateinit var habitsViewModel: HabitsListViewModel
